@@ -1,0 +1,15 @@
+{
+  "name": "elipsis",
+  "owner": {
+    "name": "Tereseus"
+  },
+  "description": "Elipsis: claim-checking and forecasting tools for Claude.",
+  "plugins": [
+    {
+      "name": "elipsis",
+      "source": "./",
+      "description": "Claim-checking and forecasting tools: decisions under uncertainty, compound-claim chains, a scored forecast ledger, steelman and entailment audits. Standard-library Python, runs locally.",
+      "version": "0.2.0"
+    }
+  ]
+}

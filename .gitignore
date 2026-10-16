@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+
+# Built locally, too large for the repository (python harness/gaphistory.py fetch-trials, fetch-approvals)
+gapmap/history.db
+
+# Your own saved work when running from a clone
+harness/ledger/
+web/*.html

@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "elipsis": {
+      "command": "python",
+      "args": ["harness/mcp_server.py"]
+    }
+  }
+}
