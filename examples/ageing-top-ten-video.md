@@ -173,16 +173,49 @@ In 2015 the FDA agreed TAME's design was workable. It has never classified agein
 
 ## How the odds were calculated
 
-> P(by 𝑌) = 𝑝₁ × 𝑝₂ × … × 𝑝ₖ × P(𝑇₁ + … + 𝑇ₖ ≤ 𝑌 − now)
+> P(𝑌) = ∏ᵢ₌₁ᵏ 𝑝ᵢ × P(∑ᵢ₌₁ᵏ 𝑇ᵢ ≤ 𝑌 − now)
 
-- P(by 𝑌) is the chance it is in place by the end of year 𝑌.
-- 𝑝₁ … 𝑝ₖ are the chances that each remaining stage succeeds.
-- 𝑇₁ … 𝑇ₖ are how long each stage takes: a typical length, with a spread.
-- now is October 2026.
+- P( ) is the chance of what is in the brackets; P(𝑌) is the chance it is in place by the end of year 𝑌.
+- 𝑘 is the number of stages left.
+- 𝑝ᵢ is the chance that stage 𝑖 succeeds, given the one before did.
+- ∏ᵢ₌₁ᵏ means multiply together, for every stage from 1 to 𝑘.
+- 𝑇ᵢ is how long stage 𝑖 takes.
+- ∑ᵢ₌₁ᵏ means add up, for every stage from 1 to 𝑘.
+- × is times, ≤ is no more than, − is minus.
+- now is 17 October 2026.
 
-**Worked example (senolytics):** 0.35 × 0.55 × 0.90 = 0.17. That is 17 in 100 that it ever succeeds and 83 in 100 that it does not. The time the stages take cuts it to 14 in 100 by 2035.
+**Operation and layer:** a chain of conditional probabilities, the probability layer. Each stage only happens if the one before it succeeds, so the chances multiply and the times add.
 
-**Operation and layer:** a chain of conditional probabilities, the probability layer. Each stage only happens if the one before it succeeds, so the chances multiply.
+**How long each stage takes** is drawn at random around its typical length:
+
+> 𝑇ᵢ = 𝑚ᵢ × exp(0.45 × 𝑧ᵢ) − 𝑑ᵢ
+
+- 𝑚ᵢ is the typical (median) length of stage 𝑖.
+- 𝑧ᵢ is a random number from the bell curve (the standard normal distribution).
+- exp( ) is e, about 2.718, raised to the power in the brackets. Here it stretches or shrinks the length: 2 times in 3 it lands between 0.64 and 1.57 times the typical length.
+- 𝑑ᵢ is the years already spent in that stage; at least 0.2 years always remain.
+
+**Operation and layer:** a lognormal draw, the simulation layer, because trial lengths cannot go below zero and occasionally run very long. A computer draws every length 200,000 times and counts how often the total fits before the year.
+
+**Worked example (senolytics by 2035):** three stages left (phase 2, phase 3, review), 2 years already spent in phase 2, and 9.2 years until the end of 2035.
+
+> P(2035) = 0.35 × 0.55 × 0.90 × P(𝑇₁ + 𝑇₂ + 𝑇₃ ≤ 9.2)
+> 𝑇₁ = 3.6 × exp(0.45 × 𝑧₁) − 2, 𝑇₂ = 3.3 × exp(0.45 × 𝑧₂), 𝑇₃ = 1.3 × exp(0.45 × 𝑧₃)
+> P(2035) = 0.173 × 0.81 = 0.14
+
+That is 17 in 100 that it ever succeeds (83 in 100 that it does not); 81 in 100 of the simulated timelines finish in time (19 do not); so 14 in 100 that it is approved by 2035, and 86 in 100 that it is not.
+
+**At least one, if the lines are independent:**
+
+> P(at least one) = 1 − ∏ⱼ₌₁⁸ (1 − 𝑃ⱼ)
+> 2035: 1 − (0.98 × 0.86 × 0.94 × 0.95 × 0.97 × 0.92 × 1 × 1) = 1 − 0.67 = 0.33
+
+- 𝑃ⱼ is the chance drug line 𝑗 is approved by then. The eight lines, in the order of the numbers: reprogramming, senolytics, plasma, NAD+ as a drug, metformin, rapamycin-type, telomerase, insulin/IGF-1.
+- 1 − 𝑃ⱼ is the chance it is not.
+- ∏ⱼ₌₁⁸ means multiply together, for all eight lines: the chance none is approved.
+- 1 minus that is the chance at least one is.
+
+**Operation and layer:** the complement of a product, the probability layer. "At least one" is easiest to reach through "none".
 
 **Stage rates** (BIO, Informa and QLS, 2021, trials from 2011 to 2020): phase 1 to 2, 52 in 100; phase 2 to 3, 29; phase 3 to filing, 58; filing to approval, 91. Typical lengths: 2.3, 3.6, 3.3 and 1.3 years. Each line is simulated 200,000 times ([ageing_milestones.py](ageing_milestones.py)).
 
