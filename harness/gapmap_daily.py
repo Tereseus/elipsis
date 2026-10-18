@@ -64,7 +64,11 @@ def get(url, tries=4):
             return body
         except urllib.error.HTTPError as e:
             if e.code == 429:
-                raise BudgetLow("429")
+                left = e.headers.get("X-RateLimit-Remaining")
+                if left is not None and int(left) < RESERVE:
+                    raise BudgetLow(left)
+                time.sleep(1.5 * (i + 1))   # a per-second limit, not the daily allowance
+                continue
             time.sleep(2 * (i + 1))
         except (urllib.error.URLError, TimeoutError):
             time.sleep(2 * (i + 1))
@@ -126,20 +130,27 @@ def sweep(days=10):
     fetched = new = nmatch = 0
     sel = "id,title,publication_date,doi,type,topics,abstract_inverted_index,primary_location"
     stopped = None
-    for k in range(0, len(ids), 50):
+    # Since October 2026 OpenAlex needs an API key to page with cursor=, and limits an OR-list of
+    # more than 10 topics to one request a second. So: chunks of 10 topics, plain page numbers
+    # (up to 50 pages of 200, OpenAlex's ceiling of 10,000 results per query), no key needed.
+    CH = 10
+    for k in range(0, len(ids), CH):
         if stopped:
             break
         f = (f"from_publication_date:{since},to_publication_date:{until},type:article|preprint,"
-             f"topics.id:{'|'.join(ids[k:k + 50])}")
-        cursor = "*"
-        while cursor:
+             f"topics.id:{'|'.join(ids[k:k + CH])}")
+        page = 1
+        while page <= 50:
             try:
                 r = get("https://api.openalex.org/works?" + urllib.parse.urlencode(
-                    {"filter": f, "per-page": 200, "cursor": cursor, "select": sel}))
+                    {"filter": f, "per-page": 200, "page": page, "select": sel}))
             except BudgetLow as e:
-                stopped = f"allowance low ({e} credits left) at topic chunk {k // 50 + 1} of {(len(ids) + 49) // 50}"
+                stopped = f"allowance low ({e} credits left) at topic chunk {k // CH + 1} of {(len(ids) + CH - 1) // CH}"
                 break
             if not r:
+                stopped = f"a request failed at topic chunk {k // CH + 1}, page {page}"
+                break
+            if not r.get("results"):
                 break
             for w in r["results"]:
                 fetched += 1
@@ -160,8 +171,10 @@ def sweep(days=10):
                         con.execute("INSERT OR IGNORE INTO matches (work, cap, score, hits, found) VALUES (?,?,?,?,?)",
                                     (wid, c["id"], round(s, 3), json.dumps(hits), now))
                         nmatch += 1
-            cursor = r.get("meta", {}).get("next_cursor")
-            time.sleep(0.12)
+            if page * 200 >= r.get("meta", {}).get("count", 0):
+                break
+            page += 1
+            time.sleep(0.25)
         con.commit()
     con.execute("INSERT INTO runs VALUES (?,?,?,?,?,?)", (now, str(since), str(until), fetched, new, nmatch))
     con.commit()
