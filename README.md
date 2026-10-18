@@ -86,6 +86,10 @@ python harness/gaphistory.py fetch-approvals
 | Clone | `harness/` inside the clone |
 | Your choice | Set the `ELIPSIS_DATA` environment variable to any folder |
 
+## A worked example
+
+[examples/ageing-top-ten-video.md](examples/ageing-top-ten-video.md) checks ten claims from a popular video on ageing research against the original studies. It then estimates when each line of research could be approved for use in people, as a chain of trial stages with published success rates. The simulation behind the table is [examples/ageing_milestones.py](examples/ageing_milestones.py).
+
 ## Licence
 
 MIT. See [LICENSE](LICENSE).
