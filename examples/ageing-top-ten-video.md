@@ -311,6 +311,27 @@ For 5 of the 9 (insulin/IGF-1, telomerase, rapamycin, TAME and the metformin lab
 
 **What this cannot do:** it ranks the known options and finds where they get stuck. It does not invent new ones. Its step chances are partly base rates and partly judgement, and Elipsis's scored record is still weak. On 18 October 2026, its 21 scored forecasts had a Brier score of 0.291, against 0.194 for a simple baseline. The Brier score is the average squared gap between the forecast and what happened; lower is better.
 
+**Has this method been tested?** Yes, backwards, on 18 October 2026. The backtest stood at the start of 2015, gave every drug then in phase 2 the same chain odds, and checked FDA approvals by the end of 2025 in Elipsis's trial-history database. The test kept only drugs that already had a generic name, because their approvals can be matched by name.
+
+> 𝑧 = (𝑂 − 𝐸) ÷ 𝑠 = (54 − 42.1) ÷ 6.0 = 1.98
+
+- 𝑂 is the approvals that actually happened: 54 of 303 drugs.
+- 𝐸 is the approvals the chain expected: the sum of the 303 drugs' chances, 42.1.
+- 𝑠 is how much the count would vary by chance alone: √(sum of 𝑝 × (1 − 𝑝)) = 6.0, where √ is the square root.
+- 𝑧 is how many of those chance-sized steps the result missed by.
+- ÷ is divided by, and − is minus.
+
+**Operation and layer:** a standardised difference between an observed and an expected count, the counting layer. It says whether a miss is bigger than chance.
+
+**Reading:** the chain expected 42 approvals and 54 happened, so it ran slightly low, not high. Three biases all push the real count up:
+- an approval for any disease counted as a success;
+- drugs with a generic name are stronger programmes;
+- the industry rates are counted per disease, not per drug.
+
+So the base rates hold up. For age-related diseases alone, 15 drugs: the chain expected 2.1 approvals, give or take 1.3, and 3 happened. Only one of the 3, lecanemab for Alzheimer's, was approved for the disease it was tested for.
+
+**What the test also showed:** the chain gets the total right, but it cannot tell which drug will win. It sizes the whole set; it does not pick the winners. The lines aimed at ageing itself cannot be tested this way at all, because no drug has ever been approved for ageing.
+
 ## The whole picture
 
 | # | Line | The claim | 2030 | 2035 | 2040 | 2050 | Ever |
