@@ -12,7 +12,7 @@ import shutil
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SAVED = ("frames", "budgets", "claims", "entail", "ledger", "decisions", "trials",
-         "passes", "chains", "panels", "questions")
+         "passes", "chains", "panels", "questions", "rows")
 
 
 def _pick():

@@ -14,6 +14,7 @@ Elipsis is an MCP server. MCP, the Model Context Protocol, is the standard way t
 - **Audits.** Steelman a claim before checking it; test whether a conclusion follows from its premises; check how a question is framed; trace where an idea already existed; grade the evidence.
 - **Trials.** Design a small self-experiment (n-of-1), assign days to arms, and analyse the result.
 - **Gap map.** Build your own map of open problems in science from public research databases, and see which ones are moving.
+- **Claim rows.** One row per checked claim: its verdict, the open problem it belongs to, the chain of steps to its milestone, and computed odds by year. Across many rows it counts where known approaches get stuck: the step whose improvement is worth the most. It ranks the options it knows about and says what it believes. It cannot invent new options, and its beliefs are scored as forecasts.
 
 The full list of tools, with one line each, is in [TOOLS.md](TOOLS.md). Every tool tells Claude to show the formula, the numbers substituted in, and a plain-English legend for every symbol.
 

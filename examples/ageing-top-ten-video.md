@@ -1,15 +1,16 @@
 # Ten "anti-ageing breakthroughs" from a YouTube video: what is true, and when each could reach people
 
-- **Date:** 2026-10-17
+- **Date:** 2026-10-17, rerun 2026-10-18 with Elipsis's gap map
 - **Kind:** claim
-- **Status:** checked and estimated. Of the ten claims, 4 hold, 4 hold only in part, and 2 are wrong on their headline claim. The chance that at least one line is approved as an ageing-related treatment: 3 in 100 by 2030, 33 by 2035, 45 by 2040, 48 by 2050.
+- **Status:** checked and estimated. Of the ten claims, 4 hold, 4 hold only in part, and 2 are wrong on their headline claim. The chance that at least one line is approved as an ageing-related treatment: 3 in 100 by 2030, 38 by 2035, 51 by 2040, 55 by 2050.
+- **Rerun on 18 October:** the gap map had two pieces of news the first version missed: the VITAL-H trial, and the FDA's statements of 1 October 2026. Rapamycin, TAME and the metformin label moved up; nothing else changed.
 - **Source text:** a "top ten" YouTube video on ageing research, pasted as a transcript. The full transcript is kept privately; it is someone else's text, so it is quoted here only in short phrases.
 
 ## How rough
 
 - **Measured:** the ten claims are checked against the original studies. Almost every effect was found in worms, jellyfish, cells or mice; nothing in the video has yet been shown to lengthen a human life.
 - **Estimated:** the odds by year use measured industry averages for how often drugs pass each trial stage and how long each stage takes, adjusted by judgement for each line.
-- **Guessed:** two rows have no trial pipeline to measure, and are marked as guesses.
+- **Guessed:** three rows have no trial pipeline to measure (9, 2 and the NAD+ supplement row), and one step is guessed outright (whether rapamycin-type drugs work in people at all). All are marked.
 
 ## The claim
 
@@ -87,9 +88,11 @@
 
 **Operation and layer:** a proportional increase, the arithmetic layer, because the study reports the gain as a share of normal lifespan. The arithmetic holds; whether it carries over from mice to people is untested.
 
-**Now:** phase 2 trials. The largest human trial so far (PEARL, 2025) missed its main goal.
+**Now:** two routes.
+- New mTOR drugs are in phase 2. The largest human trial of rapamycin so far (PEARL, 2025) missed its main goal.
+- VITAL-H was funded in February 2026 by ARPA-H, a US government health agency, with up to $38 million over five years. It will compare rapamycin, dapagliflozin and semaglutide with placebo in 726 adults in their 60s, measuring intrinsic capacity (a person's combined physical and mental capability). Enrolment is expected late 2026 or 2027.
 
-**Odds** (a rapamycin-type drug, called an mTOR inhibitor, approved for an age-related use): 2030: 0, 2035: 8, 2040: 11, 2050: 11.
+**Odds** (a rapamycin-type drug, called an mTOR inhibitor, approved for an age-related use): 2030: 1, 2035: 16, 2040: 20, 2050: 20. Before VITAL-H was counted: 0, 8, 11, 11.
 
 ### 6. Metformin: wrong
 
@@ -107,11 +110,18 @@ That is 132 deaths among the metformin group for every 100 in the matched group,
 
 In 2015 the FDA agreed TAME's design was workable. It has never classified ageing as a disease.
 
-**Now:** TAME is still short of funding: about $5 million of the $45 to $70 million needed, by 2024 reporting.
+**Now:**
+- TAME is still short of funding: about $5 million of the $45 to $70 million needed, by 2024 reporting. It has enrolled no one in the 11 years since 2015.
+- At a longevity conference (ARDD) on 1 October 2026, FDA officials said:
+  - ageing and longevity will be in the FDA's updated science priorities (FARS), planned for fiscal year 2027;
+  - one official, Jeffrey Siegel, outlined two possible ways to show a drug affects ageing: the same drug helping two or three age-related diseases, or a controlled trial showing slower decline in abilities such as cognition, frailty, hearing and vision;
+  - another official, Justin Penzenstadler, said his review office is responsible for ageing as an indication, and asked sponsors to submit trial protocols.
+
+  These are outlined options, not an accepted endpoint. The FDA has still not classified ageing as a disease.
 
 **Odds:**
-- TAME reports a positive result: 2030: 0, 2035: 7, 2040: 12, 2050: 14.
-- Metformin approved for an ageing-related use: 2030: 0, 2035: 3, 2040: 7, 2050: 8.
+- TAME reports a positive result: 2030: 0, 2035: 6, 2040: 13, 2050: 16. Before: 0, 7, 12, 14.
+- Metformin approved for an ageing-related use: 2030: 0, 2035: 3, 2040: 8, 2050: 11. Before: 0, 3, 7, 8.
 
 ### 5. NAD+, the "battery": partly
 
@@ -157,9 +167,9 @@ In 2015 the FDA agreed TAME's design was workable. It has never classified agein
 
 **The record:** epigenetic clocks do measure biological age (Horvath 2013), and they have been turned back in mice. "The primary reason" is one school's view; the standard list counts it as one of twelve hallmarks of ageing (López-Otín and others 2023).
 
-**Now:** the FDA does not accept these clocks as a trial endpoint, meaning a result that can count as proof a treatment works.
+**Now:** the FDA does not accept these clocks as a trial endpoint, meaning a result that can count as proof a treatment works. In October 2026 an FDA official suggested that the field form a shared consortium to build "a cookbook of biomarkers" for ageing trials. That is advice, not an FDA action.
 
-**Odds** (the FDA accepts an ageing clock as a trial endpoint; guessed): 2030: 2, 2035: 7, 2040: 15, 2050: 30.
+**Odds** (the FDA accepts an ageing clock as a trial endpoint; guessed): 2030: 2, 2035: 7, 2040: 15, 2050: 30. Unchanged: the FDA's interest points up, but the gap map's count points down (only 8 of 61 projects in the FDA's biomarker programme had reached qualification by July 2025, none of them for ageing).
 
 ### 1. The Yamanaka reset: holds
 
@@ -182,7 +192,7 @@ In 2015 the FDA agreed TAME's design was workable. It has never classified agein
 - 𝑇ᵢ is how long stage 𝑖 takes.
 - ∑ᵢ₌₁ᵏ means add up, for every stage from 1 to 𝑘.
 - × is times, ≤ is no more than, − is minus.
-- now is 17 October 2026.
+- now is 18 October 2026.
 
 **Operation and layer:** a chain of conditional probabilities, the probability layer. Each stage only happens if the one before it succeeds, so the chances multiply and the times add.
 
@@ -205,26 +215,55 @@ In 2015 the FDA agreed TAME's design was workable. It has never classified agein
 
 That is 17 in 100 that it ever succeeds (83 in 100 that it does not); 81 in 100 of the simulated timelines finish in time (19 do not); so 14 in 100 that it is approved by 2035, and 86 in 100 that it is not.
 
+**When there is more than one route, or a step every route needs** (rapamycin):
+
+> P(ever) = 𝑆 × (1 − ∏ᵣ (1 − 𝑃ᵣ))
+> = 0.40 × (1 − (1 − 0.625 × 0.50 × 0.90) × (1 − 0.85 × 0.75 × 0.50))
+> = 0.40 × (1 − 0.719 × 0.681) = 0.40 × 0.510 = 0.204
+
+- 𝑆 is the chance of the step every route needs: that rapamycin-type drugs slow ageing in people enough for a trial to show it. It is guessed at 0.40, because the mouse results are strong but PEARL missed its main goal.
+- 𝑃ᵣ is the chance one route succeeds once that is true. There are two routes:
+  - a new mTOR drug through the usual trials: phase 2 0.625, phase 3 0.50, review 0.90;
+  - VITAL-H: enrols 0.85, beats placebo 0.75, the FDA approves an ageing-related label 0.50.
+- ∏ᵣ means multiply together, for every route.
+- 1 − ∏ᵣ (1 − 𝑃ᵣ) is the chance at least one route works.
+
+**Operation and layer:** alternative routes behind a shared step, the probability layer. The shared step is counted once, so two routes on the same biology are not treated as two fresh chances. Without VITAL-H the same sum gives 0.40 × 0.281 = 0.11, the first version's figure.
+
+**A yearly chance instead of a guess** (TAME starting):
+
+> P(start within 𝑁 years) = 1 − (1 − ℎ)ᴺ = 1 − (1 − 0.077)¹⁰ = 1 − 0.449 = 0.55
+> ℎ = (𝑠 + 1) ÷ (𝑛 + 2) = (0 + 1) ÷ (11 + 2) = 0.077
+
+- ℎ is the chance TAME starts in any one year.
+- 𝑠 is the number of years it started: 0.
+- 𝑛 is the number of years since the FDA agreed its design: 11.
+- 𝑁 is the 10 more years allowed. After that, a 2015 design is likely to be overtaken.
+- The superscript ᴺ means multiply by itself 𝑁 times.
+
+**Operation and layer:** the rule of succession turned into a yearly rate, the counting layer. It replaces the first version's guess (0.45 within about 2.5 years) with the gap map's own count. It makes TAME more likely to start eventually, but slower to start.
+
 **At least one, if the lines are independent:**
 
 > P(at least one) = 1 − ∏ⱼ₌₁⁸ (1 − 𝑃ⱼ)
-> 2035: 1 − (0.98 × 0.86 × 0.94 × 0.95 × 0.97 × 0.92 × 1 × 1) = 1 − 0.67 = 0.33
+> 2035: 1 − (0.984 × 0.859 × 0.944 × 0.946 × 0.973 × 0.838 × 1.000 × 1.000) = 1 − 0.615 = 0.385
 
-- 𝑃ⱼ is the chance drug line 𝑗 is approved by then. The eight lines, in the order of the numbers: reprogramming, senolytics, plasma, NAD+ as a drug, metformin, rapamycin-type, telomerase, insulin/IGF-1.
+- 𝑃ⱼ is the chance drug line 𝑗 is approved by then. The eight lines, in the order of the numbers: reprogramming (0.016), senolytics (0.141), plasma (0.056), NAD+ as a drug (0.054), metformin (0.027), rapamycin-type (0.162), telomerase (0.000), insulin/IGF-1 (0.000).
 - 1 − 𝑃ⱼ is the chance it is not.
 - ∏ⱼ₌₁⁸ means multiply together, for all eight lines: the chance none is approved.
 - 1 minus that is the chance at least one is.
 
 **Operation and layer:** the complement of a product, the probability layer. "At least one" is easiest to reach through "none".
 
-**Stage rates** (BIO, Informa and QLS, 2021, trials from 2011 to 2020): phase 1 to 2, 52 in 100; phase 2 to 3, 29; phase 3 to filing, 58; filing to approval, 91. Typical lengths: 2.3, 3.6, 3.3 and 1.3 years. Each line is simulated 200,000 times ([ageing_milestones.py](ageing_milestones.py)).
+**Stage rates** (BIO, Informa and QLS, 2021, trials from 2011 to 2020): phase 1 to 2, 52 in 100; phase 2 to 3, 29; phase 3 to filing, 58; filing to approval, 91. Typical lengths: 2.3, 3.6, 3.3 and 1.3 years. Each line is simulated 200,000 times ([ageing_milestones.py](ageing_milestones.py); the maths is in Elipsis's claim-rows tool).
 
 **Adjustments:**
 - Reprogramming: phase 2 lowered to 25 in 100, because it is a first-of-its-kind gene therapy with a tumour risk.
 - Senolytics: phase 2 raised to 35, because several drugs are being tested at once.
 - Plasma: a large trial starting, 35; success in Alzheimer's at phase 3, 25.
-- NAD+ drug and rapamycin-type drugs: phase 2, 25; phase 3, 50. NAD+ also gets a factor of 0.60, because it sells cheaply as a supplement and few companies will pay for trials.
-- TAME: funded and started, 45; a positive result, 30 (the 2022 twin study weakened the case); approval of a new kind of label, 60.
+- NAD+ drug: phase 2, 25; phase 3, 50. It also gets a factor of 0.60, because it sells cheaply as a supplement and few companies will pay for trials.
+- Rapamycin-type drugs: 25 at phase 2 overall, split into 0.40 for the shared biology and 0.625 for the trial. Phase 3 is 50. VITAL-H is a second route; its label step is 50, because the FDA has only outlined intrinsic capacity, not accepted it, and no company owns the generic drug.
+- TAME: starting comes from the gap map's yearly count (above). A positive result is 30, because the 2022 twin study weakened the case. Approval of a new kind of label is 70, up from 60, because an FDA office said in October 2026 that it handles ageing as an indication.
 - Telomerase and insulin/IGF-1 drugs: a regulated ageing trial opening, 50 and 30.
 
 **Floor from Elipsis's own trial-history database** (ClinicalTrials.gov phases and first FDA approvals; similar past drugs, 2,000 simulated futures each), chance of approval by 2050:
@@ -235,33 +274,71 @@ That is 17 in 100 that it ever succeeds (83 in 100 that it does not); 81 in 100 
 
 The database misses approvals filed under new names, so it runs low; the chain sits above it, as it should.
 
+## Where all of them get stuck, and what we believe
+
+Every line is a chain of steps, so the maths can say which step is worth the most to improve:
+
+> ∂P/∂𝑝ⱼ = P ÷ 𝑝ⱼ
+> senolytics: phase 2, 0.173 ÷ 0.35 = 0.49; phase 3, 0.173 ÷ 0.55 = 0.31; review, 0.173 ÷ 0.90 = 0.19
+
+- P is the chance the whole line succeeds.
+- 𝑝ⱼ is the chance step 𝑗 succeeds.
+- ∂P/∂𝑝ⱼ is how much P rises for each point added to step 𝑗, with the other steps held fixed.
+- ÷ is divided by.
+
+**Operation and layer:** the derivative of a product, the calculus layer. It ranks the steps by what improving each one is worth, and the weakest step always comes first. For senolytics, 10 more points of success at phase 2 would lift the line from 17 in 100 to about 22. The same 10 points at review would add about 2.
+
+**The count across the nine lines with a chain:** in all nine, 9 of 9, the weakest step is the first time the treatment has to show an effect in people:
+- phase 2 for insulin/IGF-1, telomerase, NAD+, senolytics and reprogramming;
+- the biology step for rapamycin;
+- the trial result for TAME and for the metformin label;
+- the first clinical-effect trial for plasma.
+
+For 5 of the 9 (insulin/IGF-1, telomerase, rapamycin, TAME and the metformin label), the goal is ageing itself. For those, the step is blocked by the same gap-map entry: no agreed way to measure ageing in people (Long-term multimorbidity endpoints). The other 4 aim at diseases that already have agreed measures (eye disease, osteoarthritis and bone, Alzheimer's, an NAD+-related condition), and still stall at the first effect in people.
+
+**What we believe:**
+- None of these is likely to be approved before 2030: 3 in 100 that any one is, 97 in 100 that none is.
+- The step that most limits all of them is the first proof of an effect in people. For the five aimed at ageing itself, that step is blocked by the lack of an agreed measure of ageing.
+- So the work most likely to move several lines at once is an agreed ageing measure: intrinsic capacity, or a qualified biomarker of ageing. That is better than backing any one drug.
+- The FDA started down that road on 1 October 2026, which is why three lines moved up in this rerun.
+
+**How this belief will be checked:** a scored forecast. The FDA's updated science priorities name ageing or longevity by 30 September 2027: 55 in 100 (45 in 100 not). That is against a base rate of 38 in 100 from how often that report has been updated (2 of 6 years, rule of succession). A second open forecast, from the gap map, asks whether VITAL-H is registered on ClinicalTrials.gov by 31 March 2027: 55 in 100 (45 in 100 not).
+
+**What this cannot do:** it ranks the known options and finds where they get stuck. It does not invent new ones. Its step chances are partly base rates and partly judgement, and Elipsis's scored record is still weak. On 18 October 2026, its 21 scored forecasts had a Brier score of 0.291, against 0.194 for a simple baseline. The Brier score is the average squared gap between the forecast and what happened; lower is better.
+
 ## The whole picture
 
-| # | Line | The claim | 2030 | 2035 | 2040 | 2050 |
-|---|---|---|---|---|---|---|
-| 10 | Insulin/IGF-1 drug for ageing | wrong | 0 | 0 | 1 | 2 |
-| 9 | Jellyfish-derived therapy (guessed) | holds | 0 | 0 | 0 | 1 |
-| 8 | Telomerase therapy | holds | 0 | 0 | 1 | 3 |
-| 7 | Rapamycin-type drug | holds | 0 | 8 | 11 | 11 |
-| 6 | TAME positive result | wrong | 0 | 7 | 12 | 14 |
-| 6 | Metformin approved for ageing | wrong | 0 | 3 | 7 | 8 |
-| 5 | NAD+ on sale as a supplement | partly | 100 | 100 | 100 | 100 |
-| 5 | NAD+ approved as a drug | partly | 1 | 5 | 7 | 7 |
-| 4 | Plasma exchange | partly | 0 | 6 | 7 | 7 |
-| 3 | Senolytics | partly | 2 | 14 | 17 | 17 |
-| 2 | Ageing clock accepted (guessed) | partly | 2 | 7 | 15 | 30 |
-| 1 | Reprogramming, eye disease | holds | 0 | 2 | 5 | 6 |
-| | At least one drug approved, if independent | | 3 | 33 | 45 | 48 |
+| # | Line | The claim | 2030 | 2035 | 2040 | 2050 | Ever |
+|---|---|---|---|---|---|---|---|
+| 10 | Insulin/IGF-1 drug for ageing | wrong | 0 | 0 | 1 | 2 | 2 |
+| 9 | Jellyfish-derived therapy (guessed) | holds | 0 | 0 | 0 | 1 | |
+| 8 | Telomerase therapy | holds | 0 | 0 | 1 | 3 | 3 |
+| 7 | Rapamycin-type drug | holds | 1 | 16 | 20 | 20 | 20 |
+| 6 | TAME positive result | wrong | 0 | 6 | 13 | 16 | 17 |
+| 6 | Metformin approved for ageing | wrong | 0 | 3 | 8 | 11 | 12 |
+| 5 | NAD+ on sale as a supplement | partly | 100 | 100 | 100 | 100 | |
+| 5 | NAD+ approved as a drug | partly | 1 | 5 | 7 | 7 | 7 |
+| 4 | Plasma exchange | partly | 0 | 6 | 7 | 7 | 7 |
+| 3 | Senolytics | partly | 2 | 14 | 17 | 17 | 17 |
+| 2 | Ageing clock accepted (guessed) | partly | 2 | 7 | 15 | 30 | |
+| 1 | Reprogramming, eye disease | holds | 0 | 2 | 5 | 6 | 6 |
+| | At least one drug approved, if independent | | 3 | 38 | 51 | 55 | |
+
+Each figure is a chance in 100. 100 minus it is the chance it has not happened. "Ever" counts every route finishing, however long it takes.
 
 - **The claims:** 4 hold (9, 8, 7, 1); 4 hold in part (5, 4, 3, 2); 2 are wrong (10, 6).
 - **By 2030:** 3 in 100 that at least one line is approved for an ageing-related use, and 97 in 100 that none is.
-- **The best single bets:** senolytics (17 in 100 ever), a positive TAME result (14 in 100), and rapamycin-type drugs (11 in 100).
-- **At least one approved:** about 1 in 3 by 2035, and about even odds by 2050. These treat the lines as independent. If ageing biology proves hard to treat, they would fail together and the true figure would be lower; new ideas not on this list would raise it.
+- **The best single bets:** rapamycin-type drugs (20 in 100 ever), senolytics (17 in 100), and a positive TAME result (17 in 100; 16 by 2050).
+- **At least one approved:** about 2 in 5 by 2035, and about even odds by 2040. These treat the lines as independent. If ageing biology proves hard to treat, they would fail together, and the true figure would be lower. New ideas not on this list would raise it.
 - **The plateau:** most rows stop rising after 2040, so whatever chance is still missing then is failure, not delay.
 
 ## Summary
 
-The video gets the big picture right. In laboratory animals, scientists have slowed several ageing processes and partly reversed a few, and its stories about the jellyfish, HeLa cells, rapamycin and the Yamanaka factors are accurate. Its numbers are the weak spot. The famous worm lived twice as long, not ten times. The metformin survival story was reversed by a larger twin study, and the FDA never reclassified ageing as a disease. The 50-in-100 fall in NAD+ is not established in people, the young-blood protein GDF11 is disputed, and the flagship senolytic arthritis drug failed. Looking ahead, none of the ten is likely to be approved for an ageing-related use before 2030. The closest are senolytics, a positive metformin trial and rapamycin-type drugs, each with roughly a 1-in-10 to 1-in-6 chance of ever getting there. Together, there is about a 1-in-3 chance that at least one reaches people as an approved treatment by 2035, and about even odds by 2050.
+The video gets the big picture right. In laboratory animals, scientists have slowed several ageing processes and partly reversed a few, and its stories about the jellyfish, HeLa cells, rapamycin and the Yamanaka factors are accurate. Its numbers are the weak spot. The famous worm lived twice as long, not ten times. A larger twin study reversed the metformin survival story, and the FDA has never classified ageing as a disease. The 50-in-100 fall in NAD+ is not established in people, the young-blood protein GDF11 is disputed, and the flagship senolytic arthritis drug failed.
+
+Looking ahead, none of the ten is likely to be approved for an ageing-related use before 2030. The closest are rapamycin-type drugs, helped by a newly funded government trial, then senolytics and a positive metformin trial. Each has roughly a 1-in-6 to 1-in-5 chance of ever getting there. Together, there is about a 2-in-5 chance that at least one reaches people as an approved treatment by 2035.
+
+All of them get stuck at the same place: the first proof that they work in people. For the lines aimed at ageing itself, that proof needs an agreed way to measure ageing. That measure is what we believe matters most, and the FDA began working towards it in October 2026.
 
 ## Sources
 
@@ -282,10 +359,16 @@ The video gets the big picture right. In laboratory animals, scientists have slo
 - Horvath S, Genome Biology 14, 2013; López-Otín C and others, Cell 186, 2023.
 - Takahashi K and Yamanaka S, Cell 126, 2006; Lu Y and others, Nature 588, 2020; [Life Biosciences ER-100, first patient dosed, June 2026](https://longevity.technology/news/life-bio-reaches-first-clinical-milestone-for-osk-therapy/).
 - BIO, Informa and QLS, "Clinical Development Success Rates 2011–2020", 2021 (stage rates and lengths).
+- [VITAL-H, UT San Antonio, February 2026](https://news.uthscsa.edu/ut-san-antonio-to-lead-38-million-national-trial-testing-drugs-to-extend-healthspan/); [San Antonio Report](https://sanantonioreport.org/study-drugs-slow-aging-ut-health-san-antonio/).
+- [FDA leaders at ARDD, Lifespan Research Institute, 2 October 2026](https://lifespan.io/?p=158863); [GEN, FDA to highlight ageing in planned FARS update](https://www.genengnews.com/topics/translational-medicine/fda-to-highlight-aging-longevity-medicine-in-planned-fars-update/).
+- [TAME has enrolled no one since 2015, Technology Org, September 2026](https://www.technology.org/2026/09/26/tame-trial-metformin-aging-funding/) (the gap map's count).
+- [Biomarker Qualification Program timelines, 2025](https://pmc.ncbi.nlm.nih.gov/articles/PMC12753548/) (8 of 61 projects qualified).
 
 ## The questions asked (verbatim)
 
 1. "Here's a case that I think would also be good to be public as well, um, because this is just about aging." (with the video's transcript)
 2. "what do you think are the percent chance that some of these are affected or in place by certain years? ... if they were able to actually succeed in what they wanted to do in the next stage, steps of steps of it. So can you do the math for all of that?"
 
-Both answers are merged here into one story.
+3. Then, after a talk about tying cases to the gap map: "if that's what this thing can actually do, then we should say that it's ... this is what we believe ... go ahead and do all that stuff". That led to the rerun with the gap map's news, the count of where the lines get stuck, and the belief stated above.
+
+All three answers are merged here into one story.

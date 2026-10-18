@@ -1,6 +1,6 @@
 # The tools
 
-46 tools, generated from `harness/mcp_server.py`. Each tool's full description is what Claude sees.
+47 tools, generated from `harness/mcp_server.py`. Each tool's full description is what Claude sees.
 
 | tool | what it does |
 |---|---|
@@ -8,6 +8,7 @@
 | `reference_models` | THE STANDARD FORMAL MODEL FOR A TOPIC, so the steelman step has something real to hold a claim against. |
 | `whats_new_for_gap` | NEW PAPERS FOR ONE GAP MAP GAP, since the last look. |
 | `will_this_work` | THE ODDS FOR ONE GAP MAP FIX: its counted base rate (s of n similar attempts and the rule of succession (s + 1) / (n + 2)), the forecast on the record for a near-term question, and what is known. |
+| `claim_rows` | ONE ROW PER CHECKED CLAIM, SO CLAIMS CAN BE COUNTED. |
 | `gaps_moving` | GAP MAP GAPS RANKED BY RECENT ACTIVITY: papers in the last `days` that the daily reading judged on topic, with the judged and unjudged counts beside them. |
 | `decide_panel` | READ BACK FILLED ELICITATION SHEETS FOR A DECISION and MEASURE the shared-author bias instead of assuming it. |
 | `chain` | USE THIS WHEN a claim needs several separate things to ALL go right -- 'X will happen, and then Y, and then Z'. |

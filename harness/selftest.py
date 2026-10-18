@@ -26,6 +26,14 @@ CHECKS = [
                                     "basis": "A fair coin."} for i in (1, 2, 3)]}},
      "0.125"),
     ("ledger_status", {}, ""),
+    ("claim_rows", {"action": "add", "rows": {
+        "id": "selftest#1", "claim": "A test claim.", "source": "selftest",
+        "date": "2026-01-01", "field": "test", "evidence": "animals", "verdict": "holds",
+        "milestone": "approved", "routes": [{"name": "usual trials", "stages": [
+            {"stage": "phase 2", "kind": "first effect in people", "p": 0.3, "median": 3.6},
+            {"stage": "review", "kind": "regulator", "p": 0.9, "median": 1.3}]}]}},
+     "added selftest#1"),
+    ("claim_rows", {"action": "sticking"}, "selftest#1 (phase 2, chance 0.30)"),
     ("steelman", {}, "STEELMAN"),
     ("evidence", {}, "EVIDENCE"),
 ]

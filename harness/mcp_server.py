@@ -72,6 +72,7 @@ import evidence as EV   # noqa: E402
 import operations as OP # noqa: E402
 import loop as LP       # noqa: E402
 import reference_models as RM  # noqa: E402
+import claimrows as CRW     # noqa: E402
 
 OUT = os.path.join(HERE, "..", "web") if paths.DATA == HERE else paths.data("web")
 PROTOCOL = "2024-11-05"
@@ -662,6 +663,23 @@ def _load_chain(args):
     raise ValueError("pass either `chain` (inline) or `name` (saved)")
 
 
+def t_claim_rows(args):
+    act = args.get("action", "list")
+    if act == "list":
+        return CRW.listing(args.get("entry"))
+    if act == "show":
+        if not args.get("id"):
+            raise ValueError("pass `id` to show one row")
+        return CRW.show(args["id"])
+    if act == "sticking":
+        return CRW.sticking(args.get("field"))
+    if act == "add":
+        if not args.get("rows"):
+            raise ValueError("pass `rows`: one row or a list of rows")
+        return CRW.add(args["rows"], args.get("reason", ""))
+    raise ValueError("action must be list, show, sticking or add")
+
+
 def _needs_gapmap(fn):
     """The gap-map tools read data built on this machine; say so instead of failing."""
     def run(args):
@@ -857,6 +875,31 @@ TOOLS = {
    "no counted base rate it says there are no odds rather than inventing "
    "them. Pass `fix` (a fix or pilot-node name or fragment).",
    {"type": "object", "properties": {"fix": {"type": "string"}}, "required": ["fix"]}),
+
+ "claim_rows": (t_claim_rows,
+   "ONE ROW PER CHECKED CLAIM, SO CLAIMS CAN BE COUNTED. A case checks a claim in "
+   "prose; a row keeps the same fields for every claim: what was claimed and where, "
+   "the gap-map entry it belongs to (`about`) and the one that blocks it "
+   "(`blocked_by`), the evidence it rested on, the verdict (holds, partly, wrong), "
+   "the milestone, and its routes: chains of steps, each with a chance `p`, a "
+   "typical length `median` in years, years already `done`, a `kind` (funding or "
+   "start, safety in people, first effect in people, confirmation, regulator) and "
+   "`why`. A yearly-chance step uses `per_year` and `max_years` instead of p and "
+   "median. Steps every route needs go in `shared`. Rows with no chain give "
+   "`guessed` odds by year instead. The odds by 2030, 2035, 2040 and 2050 and the "
+   "weakest step (dP/dp_j = P / p_j, the step worth most to improve) are computed, "
+   "never typed in. An update keeps the old odds and the reason they changed.\n\n"
+   "action `list` (optionally `entry`, a gap-map slug), `show` (`id`), `sticking` "
+   "(optionally `field`): where known approaches get stuck, the weakest step of "
+   "every row grouped by kind and by blocking gap-map entry, with every item "
+   "listed. It ranks known options; it cannot invent new ones. `add` (`rows`, "
+   "`reason`) saves or updates rows. Show the formula and its legend when you "
+   "use the numbers.",
+   {"type": "object", "properties": {
+      "action": {"type": "string", "enum": ["list", "show", "sticking", "add"]},
+      "id": {"type": "string"}, "entry": {"type": "string"},
+      "field": {"type": "string"}, "reason": {"type": "string"},
+      "rows": {}}}),
 
  "gaps_moving": (_needs_gapmap(GT.gaps_moving),
    "GAP MAP GAPS RANKED BY RECENT ACTIVITY: papers in the last `days` that "
