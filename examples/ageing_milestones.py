@@ -1,5 +1,5 @@
 """Chance that each of ten ageing interventions is in place by 2030, 2035, 2040 and 2050.
-Case: ten anti-ageing claims from a video, Round 2 (2026-10-17).
+Case: ten anti-ageing claims from a video (2026-10-17), the odds-by-year part.
 
 In place = approved by the FDA or the EMA for an ageing-related use in people, unless the row says
 otherwise. Each row is a chain of the stages still ahead: the chance all succeed, times the chance
