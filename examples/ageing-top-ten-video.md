@@ -177,7 +177,12 @@ In 2015 the FDA agreed TAME's design was workable. It has never classified agein
 
 **The record:** four factors reprogram adult cells (Takahashi and Yamanaka 2006; Nobel Prize 2012), and a full reset risks tumours. A partial dose of three of them restored much of the lost vision in old mice and in a glaucoma model (Lu and others 2020). The mice had failing sight, not total blindness.
 
-**Now:** the first person was dosed in June 2026, in a phase 1 safety trial in the eye (Life Biosciences, ER-100).
+**Now:** the first person was dosed in June 2026, in a phase 1 safety trial in the eye (Life Biosciences, ER-100). Interim data, October 2026:
+- the first three people with glaucoma tolerated the lowest dose through day 56;
+- the safety board recommended moving to the next dose;
+- two of the three showed early gains on visual-field tests.
+
+The study is open-label and has no comparison group, and three people over 56 days is too little to move the odds, so the phase 1 chance stays at 0.50.
 
 **Odds** (approved for an eye disease): 2030: 0, 2035: 2, 2040: 5, 2050: 6.
 
@@ -357,7 +362,7 @@ All of them get stuck at the same place: the first proof that they work in peopl
 - [Plasma exchange trial, Fuentealba and others, Aging Cell, 2025](https://www.buckinstitute.org/news/clinical-trial-and-multi-omics-analysis-demonstrates-the-impact-of-therapeutic-plasma-exchange-on-biological-age/).
 - Baker DJ and others, Nature 530, 2016; [UBX0101 phase 2 result, August 2020](https://www.fightaging.org/archives/2020/08/unity-biotechnology-fails-phase-ii-trial-of-localized-senolytics-for-knee-osteoarthritis/); [Farr JN and others, Nature Medicine, 2024](https://fightaging.org/archives/2024/07/results-from-a-phase-2-trial-of-senolytic-therapy-dasatinib-and-quercetin-for-osteoporosis) (senolytics for bone).
 - Horvath S, Genome Biology 14, 2013; López-Otín C and others, Cell 186, 2023.
-- Takahashi K and Yamanaka S, Cell 126, 2006; Lu Y and others, Nature 588, 2020; [Life Biosciences ER-100, first patient dosed, June 2026](https://longevity.technology/news/life-bio-reaches-first-clinical-milestone-for-osk-therapy/).
+- Takahashi K and Yamanaka S, Cell 126, 2006; Lu Y and others, Nature 588, 2020; [Life Biosciences ER-100, first patient dosed, June 2026](https://longevity.technology/news/life-bio-reaches-first-clinical-milestone-for-osk-therapy/); [ER-100 interim phase 1 data, October 2026](https://www.lifebiosciences.com/life-biosciences-announces-first-in-human-data-from-ongoing-phase-1-trial-evaluating-er-100-in-optic-neuropathies/).
 - BIO, Informa and QLS, "Clinical Development Success Rates 2011–2020", 2021 (stage rates and lengths).
 - [VITAL-H, UT San Antonio, February 2026](https://news.uthscsa.edu/ut-san-antonio-to-lead-38-million-national-trial-testing-drugs-to-extend-healthspan/); [San Antonio Report](https://sanantonioreport.org/study-drugs-slow-aging-ut-health-san-antonio/).
 - [FDA leaders at ARDD, Lifespan Research Institute, 2 October 2026](https://lifespan.io/?p=158863); [GEN, FDA to highlight ageing in planned FARS update](https://www.genengnews.com/topics/translational-medicine/fda-to-highlight-aging-longevity-medicine-in-planned-fars-update/).
