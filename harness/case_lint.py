@@ -14,6 +14,10 @@ top of an answer go further than the facts underneath them):
              testing the argument; the verdict on the words must stand on
              its own, and on a claim about a whole group it must not borrow
              the steelman's generosity.
+  KINDS      a case file has no "- **Question kinds:**" line naming which of the twelve
+             kinds of question below it asks (numbers, most important first). The tags
+             let a scored record show which kinds the checker gets right.
+
   OVERREACH  a sweeping word (all, always, never, accepted, celebrated,
              proven...) appears in the verdict, answer or summary but not
              in the evidence above it.
@@ -37,6 +41,21 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 CLAIMS = os.path.join(HERE, "..", "cases", "claims")
+
+QUESTION_KINDS = {
+    1: "Lookup: a date or a figure that is on record",
+    2: "Claim against sources: is what was said true, by the record",
+    3: "Cause: did X cause Y",
+    4: "Forecast: will X happen by a date",
+    5: "What if: what would have happened (counterfactual)",
+    6: "Choice or design: which option is best, or build something that does X",
+    7: "Values: what should we want",
+    8: "Meaning: is X a Y (definitions)",
+    9: "Motive: why did they do it (intent)",
+    10: "Real or fake: did they really say it, is it authentic (provenance)",
+    11: "Proof: does the logic or arithmetic hold",
+    12: "Strategy: what will others do in response (the answer can change the outcome)",
+}
 
 GROUP_WORDS = r"""peoples tribe tribes women men
 Christians Jews Hindus Buddhists Catholics Protestants Mormons atheists
@@ -117,6 +136,12 @@ def lint_round(text):
 def lint_file(path, since=None):
     text = io.open(path, encoding="utf-8").read()
     found = []
+    if os.path.basename(path) == "INDEX.md" or "**Merged into:**" in text[:3000]:
+        return found    # the generated index, or a pointer to where a thread moved
+    dated = [d for _, d, _ in rounds(text)]
+    if "**Question kinds:**" not in text and (not since or any(d and d >= since for d in dated)):
+        found.append(("(file)", "KINDS", "no '- **Question kinds:**' line; tag it with numbers from "
+                      "QUESTION_KINDS, most important first"))
     for head, date, body in rounds(text):
         if since and (not date or date < since):
             continue

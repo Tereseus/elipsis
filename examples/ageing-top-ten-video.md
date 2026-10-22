@@ -1,4 +1,5 @@
 # Ten "anti-ageing breakthroughs" from a YouTube video: what is true, and when each could reach people
+- **Question kinds:** 2, 4
 
 - **Date:** 2026-10-17, rerun 2026-10-18 with Elipsis's gap map
 - **Kind:** claim
