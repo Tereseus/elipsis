@@ -127,8 +127,10 @@ def lint_round(text):
                           "group, or the verdict is at most 'partly true, for some'"))
     top, body = split_summary(lines)
     body_words = words("\n".join(body))
+    # "always saying 50 in 100" names a reference forecast, not a sweeping claim.
+    top_words = words(re.sub(r"always saying", "", "\n".join(top), flags=re.I))
     for w in SWEEPING:
-        if w in words("\n".join(top)) and w not in body_words:
+        if w in top_words and w not in body_words:
             flags.append(("OVERREACH", "'{}' is in the verdict or summary but nowhere in the evidence".format(w)))
     return flags
 
