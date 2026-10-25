@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-numbers.py -- forecasts of a number, scored by how close they land.
+number_ledger.py -- forecasts of a number, scored by how close they land.
 
 The claim ledger (ledger.py) scores yes/no questions with the Brier score. A
 yes/no line throws away how far off a forecast was: "claims above 205,000?"
@@ -18,7 +18,8 @@ Scores, all of which reward reporting what you actually believe:
                    score is your median.
   vs the baseline  ratio r = your error / the baseline's error. Below 1 means you
                    beat it. Ratios from different units can be compared, so the
-                   record averages them (geometric mean) across questions.
+                   record averages them (geometric mean, each clipped to 0.1-10)
+                   across questions.
   quantile loss    for LOW, MEDIAN and HIGH: rho_t(u) = u (t - [u < 0]),
                    u = actual - guess, averaged over the three. It rewards a
                    range that is narrow and still right (Gneiting and Raftery 2007).
@@ -27,17 +28,33 @@ Scores, all of which reward reporting what you actually believe:
 
 Nothing is overwritten: the store is append-only, like the ledger's.
 
-Run:  python harness/numbers.py                  -- open forecasts, due first
-      python harness/numbers.py add <file.json>  -- log one (no file: template)
-      python harness/numbers.py resolve <id> <actual> ["note"] [--early "why"]
-      python harness/numbers.py score            -- the record
+SETTLING ITSELF. A forecast may carry a machine-checkable "source", the
+forecasting version of a proof checker: if the data source returns the figure,
+the forecast resolves itself, with no judgement. Supported:
+  {"type": "bls", "series": "LNS14000000", "period": "2026-M10", "transform": "value"}
+  {"type": "bls", "series": "CES0000000001", "period": "2026-M10", "transform": "change"}
+(US Bureau of Labor Statistics public API, no key; "change" is the period minus
+the period before.) {"type": "manual", "where": "..."} says where to look by hand.
+The free daily run (gapwatch.py) calls autoresolve() every morning.
+
+Run:  python harness/number_ledger.py                  -- open forecasts, due first
+      python harness/number_ledger.py add <file.json>  -- log one (no file: template)
+      python harness/number_ledger.py resolve <id> <actual> ["note"] [--early "why"]
+      python harness/number_ledger.py setsource <id> <source.json> -- give an open forecast
+                                                     a source it lacks (once)
+      python harness/number_ledger.py link <id> <ledger_id> <op> <threshold>
+                                                  -- the number also closes a yes/no
+                                                     question in ledger.py (op: > >= < <=)
+      python harness/number_ledger.py auto              -- settle what the sources can
+      python harness/number_ledger.py score            -- the record
 Standard library only.
 """
 import json
 import math
 import os
 import sys
-from datetime import date
+import urllib.request
+from datetime import date, timedelta
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -137,6 +154,107 @@ def resolve(d, fid, actual, note, early=None):
     return True, msg
 
 
+BLS_API = "https://api.bls.gov/publicAPI/v2/timeseries/data/"
+
+
+def bls_fetch(series):
+    """{series: {"2026-M10": value}} from the BLS public API (keyless: a few queries a day)."""
+    body = json.dumps({"seriesid": sorted(series)}).encode()
+    req = urllib.request.Request(BLS_API, data=body, headers={
+        "Content-Type": "application/json", "User-Agent": "Elipsis (keyless)"})
+    d = json.loads(urllib.request.urlopen(req, timeout=40).read())
+    if d.get("status") != "REQUEST_SUCCEEDED":
+        raise RuntimeError(f"BLS: {d.get('status')} {d.get('message')}")
+    out = {}
+    for s in d["Results"]["series"]:
+        # "-" marks a month that was never published (a shutdown, for example).
+        out[s["seriesID"]] = {f"{r['year']}-{r['period']}": float(r["value"])
+                              for r in s["data"]
+                              if r["period"].startswith("M") and r["value"] not in ("-", "")}
+    return out
+
+
+def _prev_month(period):
+    y, m = int(period[:4]), int(period[-2:])
+    y, m = (y - 1, 12) if m == 1 else (y, m - 1)
+    return f"{y}-M{m:02d}"
+
+
+def autoresolve(d, fetch=bls_fetch, on=None):
+    """Settle every due forecast whose source can answer. Returns lines saying what happened."""
+    on = on or date.today().isoformat()
+    due = [f for f in d["forecasts"] if not f.get("resolved") and f["resolves"] <= on
+           and (f.get("source") or {}).get("type") == "bls"]
+    if not due:
+        return []
+    data = fetch({f["source"]["series"] for f in due})
+    out = []
+    for f in due:
+        src = f["source"]
+        vals = data.get(src["series"], {})
+        if src["period"] not in vals:
+            late = date.fromisoformat(on) - date.fromisoformat(f["resolves"]) > timedelta(days=25)
+            out.append(f"[{f['id']}] {src['series']} {src['period']} not published yet"
+                       + (" (25+ days late: check by hand)" if late else ""))
+            continue
+        y = vals[src["period"]]
+        if src.get("transform") == "change":
+            p0 = _prev_month(src["period"])
+            if p0 not in vals:
+                out.append(f"[{f['id']}] previous month {p0} missing")
+                continue
+            y = round(y - vals[p0], 3)
+        note = f"auto: BLS {src['series']} {src['period']} ({src.get('transform', 'value')}) = {y:g}, fetched {on}"
+        ok, msg = resolve(d, f["id"], y, note)
+        out.append(msg)
+        if ok:
+            out += settle_links(f, y, note)
+    return out
+
+
+OPS = {">": lambda a, b: a > b, ">=": lambda a, b: a >= b,
+       "<": lambda a, b: a < b, "<=": lambda a, b: a <= b}
+
+
+def settle_links(f, y, note):
+    """A yes/no question in the claim ledger that this number decides
+    ("unemployment 4.3 or higher?") closes with it."""
+    out = []
+    if not f.get("links"):
+        return out
+    import ledger as L
+    d = L.load()
+    for k in f["links"]:
+        outcome = OPS[k["op"]](y, k["threshold"])
+        closed = L.resolve(d, k["ledger_id"], outcome, f"{note}; {y:g} {k['op']} {k['threshold']:g} is {outcome}")
+        out.append(f"  linked yes/no [{k['ledger_id']}]: {'closed ' + str(outcome) if closed else 'not closed'}")
+    return out
+
+
+def link(d, fid, ledger_id, op, threshold):
+    f = find(d, fid)
+    if f is None or f.get("resolved"):
+        return False, "Only an open forecast can be linked."
+    if op not in OPS:
+        return False, f"op must be one of {sorted(OPS)}"
+    f.setdefault("links", []).append({"ledger_id": ledger_id, "op": op, "threshold": threshold,
+                                       "added": date.today().isoformat()})
+    save(d)
+    return True, f"[{fid}] will also close [{ledger_id}] as: actual {op} {threshold:g}."
+
+
+def set_source(d, fid, src):
+    f = find(d, fid)
+    if f is None:
+        return False, f"No forecast with id '{fid}'."
+    if f.get("resolved") or f.get("source"):
+        return False, "Only an open forecast without a source can be given one."
+    f["source"] = src
+    f["source_added"] = date.today().isoformat()
+    save(d)
+    return True, f"[{fid}] now settles from {src}."
+
+
 def show_open(d):
     today = date.today().isoformat()
     rows = sorted((f for f in d["forecasts"] if not f.get("resolved")), key=lambda f: f["resolves"])
@@ -165,10 +283,12 @@ def score(d):
         print(line)
     rs = [s["ratio"] for _, s in ss if "ratio" in s]
     if rs:
-        g = math.exp(sum(math.log(max(r, 1e-6)) for r in rs) / len(rs))
+        # Geometric mean of ratios clipped to 0.1..10, so one exact hit (ratio 0)
+        # or one baseline that was spot on cannot swamp the record.
+        g = math.exp(sum(math.log(min(max(r, 0.1), 10)) for r in rs) / len(rs))
         beat = sum(1 for r in rs if r < 1)
-        print(f"Beat the baseline on {beat} of {len(rs)}. Typical ratio (geometric mean) {g:.2f}: "
-              f"{'better' if g < 1 else 'no better'} than the baseline.")
+        print(f"Beat the baseline on {beat} of {len(rs)}. Typical ratio (geometric mean, each "
+              f"clipped to 0.1-10) {g:.2f}: {'better' if g < 1 else 'no better'} than the baseline.")
     cov = [s["covered"] for _, s in ss if "covered" in s]
     if cov:
         print(f"Actual inside the 80 in 100 range: {sum(cov)} of {len(cov)} "
@@ -194,10 +314,18 @@ def main(argv):
             early = rest[i + 1] if i + 1 < len(rest) else "no reason given"
             rest = rest[:i] + rest[i + 2:]
         if len(rest) < 2:
-            print('usage: numbers.py resolve <id> <actual> ["note"] [--early "why"]')
+            print('usage: number_ledger.py resolve <id> <actual> ["note"] [--early "why"]')
             return
         ok, msg = resolve(d, rest[0], float(rest[1]), rest[2] if len(rest) > 2 else "", early)
         print(msg)
+    elif cmd == "setsource":
+        ok, msg = set_source(d, argv[1], json.load(open(argv[2], encoding="utf-8")))
+        print(msg)
+    elif cmd == "link":
+        ok, msg = link(d, argv[1], argv[2], argv[3], float(argv[4]))
+        print(msg)
+    elif cmd == "auto":
+        print("\n".join(autoresolve(d)) or "Nothing due with a source.")
     elif cmd == "score":
         score(d)
     else:
