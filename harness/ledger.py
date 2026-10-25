@@ -464,8 +464,23 @@ def score(d):
     if aside:
         print(f"  ({', '.join(aside)} -- not scored)")
     print(f"  your Brier score          {mine:.3f}")
+    corr = loo(d)
+    if corr is not None:
+        # The forecast to report is the corrected one: the raw number pulled
+        # toward the baseline by k. Scored leave-one-out, so it never sees its
+        # own answer.
+        print(f"  corrected Brier           {corr:.3f}  (the number to report; tested leave-one-out)")
     print(f"  the baseline's Brier      {base:.3f}")
     print(f"  always saying 50%         {always_half:.3f}")
+    # The score of always saying the record's own yes-rate b. Weather
+    # forecasters call this climatology. It depends on what is asked: rare
+    # events make it small, so a "good" Brier depends on the questions.
+    b = sum(outcome01(c) for c in rs) / len(rs)
+    print(f"  always saying the yes-rate ({b:.2f})  {b * (1 - b):.3f}")
+    if base > 0:
+        print(f"  skill against the baseline  {1 - mine / base:+.2f} raw"
+              + (f", {1 - corr / base:+.2f} corrected" if corr is not None else "")
+              + "  (above 0 beats it)")
     print()
 
     # The headline. Everything else is detail.
