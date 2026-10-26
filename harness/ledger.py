@@ -326,17 +326,32 @@ def one_question_flips(rs, corrected=True):
     return out
 
 
-def show_target(rs, corr, base):
+def show_target(rs):
     """Progress toward a dated target kept in target.json, if one is set:
-    {"by": "YYYY-MM-DD", "min_scored": 50, "exclude": [ids], "what": "..."}."""
+    {"by": "YYYY-MM-DD", "min_scored": 50, "what": "...",
+     "leave_out": {"ids": [...], "modes": [...], "topics": [...]}}.
+    Forecasts matching leave_out are still logged and scored above; the
+    target simply does not count them."""
     if not os.path.exists(TARGET):
         return
     with open(TARGET, encoding="utf-8") as f:
         t = json.load(f)
-    n = len([c for c in rs if c["id"] not in t.get("exclude", [])])
+    lo = t.get("leave_out", {})
+
+    def left_out(c):
+        tags = set(c.get("mode", [])) | set(c.get("tags", []))
+        tops = set(c.get("topic", []) if isinstance(c.get("topic"), list) else [c.get("topic")])
+        return (c["id"] in lo.get("ids", []) or tags & set(lo.get("modes", []))
+                or (tops | tags) & set(lo.get("topics", [])))
+
+    cs = [c for c in rs if not left_out(c)]
+    base = sum(brier(base_p(c), c["resolved"]["outcome"]) for c in cs) / len(cs) if cs else 0
+    corr = loo({"claims": cs})
     skill = f"{1 - corr / base:+.2f}" if corr is not None and base > 0 else "not yet computable"
-    print(f"  TARGET by {t['by']}: {n} of {t['min_scored']} scored, corrected skill "
-          f"{skill} (needs above 0). {t.get('what', '')}".rstrip())
+    print(f"  TARGET by {t['by']}: {len(cs)} of {t['min_scored']} counted "
+          f"({len(rs) - len(cs)} left out), corrected skill {skill} (needs above 0). "
+          f"{t.get('what', '')}".rstrip())
+
 
 def show_open(d, only_due=False):
     now = today()
@@ -532,7 +547,7 @@ def score(d):
                 print(f"    {cid}  ({which})")
         else:
             print("  no single question flips who wins")
-        show_target(rs, corr, base)
+        show_target(rs)
     print()
 
     # The headline. Everything else is detail.
