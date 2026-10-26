@@ -294,6 +294,50 @@ def loo(d):
 
 # --------------------------------------------------------------- reports ---
 
+TARGET = paths.data("ledger", "target.json")
+
+
+def one_question_flips(rs, corrected=True):
+    """Scored claims whose removal alone flips whether the record beats the
+    baseline. Any such claim means the lead or lag is too thin to read."""
+    def gap(cs):
+        mine = sum(brier(c["probability"], c["resolved"]["outcome"]) for c in cs)
+        return mine - sum(brier(base_p(c), c["resolved"]["outcome"]) for c in cs)
+
+    def gap_corr(cs):
+        corr = loo({"claims": cs})
+        if corr is None:
+            return None
+        return corr - sum(brier(base_p(c), c["resolved"]["outcome"]) for c in cs) / len(cs)
+
+    full_raw, full_corr = gap(rs), gap_corr(rs) if corrected else None
+    out = []
+    for i, c in enumerate(rs):
+        others = rs[:i] + rs[i + 1:]
+        which = []
+        if (gap(others) < 0) != (full_raw < 0):
+            which.append("raw")
+        if full_corr is not None:
+            g = gap_corr(others)
+            if g is not None and (g < 0) != (full_corr < 0):
+                which.append("corrected")
+        if which:
+            out.append((c["id"], " and ".join(which)))
+    return out
+
+
+def show_target(rs, corr, base):
+    """Progress toward a dated target kept in target.json, if one is set:
+    {"by": "YYYY-MM-DD", "min_scored": 50, "exclude": [ids], "what": "..."}."""
+    if not os.path.exists(TARGET):
+        return
+    with open(TARGET, encoding="utf-8") as f:
+        t = json.load(f)
+    n = len([c for c in rs if c["id"] not in t.get("exclude", [])])
+    skill = f"{1 - corr / base:+.2f}" if corr is not None and base > 0 else "not yet computable"
+    print(f"  TARGET by {t['by']}: {n} of {t['min_scored']} scored, corrected skill "
+          f"{skill} (needs above 0). {t.get('what', '')}".rstrip())
+
 def show_open(d, only_due=False):
     now = today()
     op = open_claims(d)
@@ -481,6 +525,14 @@ def score(d):
         print(f"  skill against the baseline  {1 - mine / base:+.2f} raw"
               + (f", {1 - corr / base:+.2f} corrected" if corr is not None else "")
               + "  (above 0 beats it)")
+        flips = one_question_flips(rs, corr is not None)
+        if flips:
+            print("  NOT MEANINGFUL YET: leaving out one question alone flips who wins:")
+            for cid, which in flips:
+                print(f"    {cid}  ({which})")
+        else:
+            print("  no single question flips who wins")
+        show_target(rs, corr, base)
     print()
 
     # The headline. Everything else is detail.
