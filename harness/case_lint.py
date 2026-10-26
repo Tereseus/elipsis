@@ -18,6 +18,12 @@ top of an answer go further than the facts underneath them):
              kinds of question below it asks (numbers, most important first). The tags
              let a scored record show which kinds the checker gets right.
 
+  ACCURACY   the claim quotes "N% accuracy" (or accurate, correct, success rate)
+             and the round never says what it is a share of: right answers
+             out of all, or a share of a ceiling (such as people's own
+             test-retest consistency), and what chance or a baseline scores.
+             A share of a ceiling read as plain accuracy overstates it.
+
   OVERREACH  a sweeping word (all, always, never, accepted, celebrated,
              proven...) appears in the verdict, answer or summary but not
              in the evidence above it.
@@ -73,6 +79,11 @@ SOFT_VERDICT = re.compile(r"at (?:its|the) core|in spirit|at heart|essentially t
                           r"broadly true|true at root|true underneath", re.I)
 SWEEPING = """all always never every everyone everybody nobody none entirely completely wholly
 universally proven proves certainly accepted celebrated loved hated whole""".split()
+ACCURACY = re.compile(r"\b\d+(?:\.\d+)?\s*(?:%|percent|per cent)\s*(?:plus\s+|\+\s*)?"
+                      r"(?:accura\w*|correct\w*|success rate|hit rate|precision)"
+                      r"|\baccura\w* of (?:about |over |nearly )?\d+(?:\.\d+)?\s*(?:%|percent)", re.I)
+ACCURACY_BASIS = re.compile(r"test-retest|ceiling|normali[sz]ed|out of|in 100|\braw\b|by chance|"
+                            r"\bchance (?:alone|level|would)|baseline|base rate|share of", re.I)
 CLAIM_LINE = re.compile(r"^(?:\*\*(?:[A-Z][\w' ]*?)?(?:claim|question|quote)[^*]*\*\*|>)", re.I)
 VERDICT_LINE = re.compile(r"^(?:\*\*)?(?:revised )?verdict", re.I)
 SUMMARY_HEAD = re.compile(r"^(?:#+\s*)?(?:summary|answer|verdict)\b", re.I)
@@ -125,6 +136,11 @@ def lint_round(text):
                 and not re.search(r"whole group|all members", text, re.I):
             flags.append(("GROUP", "verdict 'true' on a claim about a whole group; the evidence must cover the "
                           "group, or the verdict is at most 'partly true, for some'"))
+    acc = ACCURACY.search(claims)
+    if acc and not ACCURACY_BASIS.search(text):
+        flags.append(("ACCURACY", "the claim quotes '{}'; say what it is a share of (right answers out of all, "
+                      "or a share of a ceiling such as test-retest consistency) and what chance or a baseline "
+                      "would score".format(acc.group(0))))
     top, body = split_summary(lines)
     body_words = words("\n".join(body))
     # "always saying 50 in 100" names a reference forecast, not a sweeping claim.
