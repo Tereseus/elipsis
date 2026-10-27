@@ -36,7 +36,6 @@ CHECKS = [
     ("claim_rows", {"action": "sticking"}, "selftest#1 (phase 2, chance 0.30)"),
     ("steelman", {}, "STEELMAN"),
     ("evidence", {}, "EVIDENCE"),
-    ("icon_array", {"p": 0.08}, "8 in 100 shaded"),
 ]
 
 

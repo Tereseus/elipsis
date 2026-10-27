@@ -1,6 +1,6 @@
 # The tools
 
-48 tools, generated from `harness/mcp_server.py`. Each tool's full description is what Claude sees.
+47 tools, generated from `harness/mcp_server.py`. Each tool's full description is what Claude sees.
 
 | tool | what it does |
 |---|---|
@@ -50,5 +50,4 @@
 | `route` | THE ELEVEN SHAPE QUESTIONS. |
 | `constant` | USE THIS BEFORE QUOTING ANY PUBLISHED EFFECT SIZE about elections, coalitions or party systems. |
 | `theory_slot` | USE THIS WHEN somebody proposes wiring a social-science theory into an analysis. |
-| `icon_array` | DRAW A CHANCE AS COUNTED PEOPLE: a plain-text grid of dots (an icon array) with a key giving the count both ways, e.g. |
 | `render_finding` | Write a standalone HTML page presenting a result in plain English — a verdict, bar charts, and the claims that could not be tested. |
