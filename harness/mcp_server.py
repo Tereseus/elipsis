@@ -72,6 +72,7 @@ import evidence as EV   # noqa: E402
 import operations as OP # noqa: E402
 import loop as LP       # noqa: E402
 import reference_models as RM  # noqa: E402
+import icons as IC      # noqa: E402
 import claimrows as CRW     # noqa: E402
 
 OUT = os.path.join(HERE, "..", "web") if paths.DATA == HERE else paths.data("web")
@@ -1804,6 +1805,20 @@ TOOLS = {
         "description": "Is there a public dataset that operationalises "
                        "the inputs?"}},
     "required": ["theory"]}),
+
+ "icon_array": (IC.tool,
+   "DRAW A CHANCE AS COUNTED PEOPLE: a plain-text grid of dots (an icon "
+   "array) with a key giving the count both ways, e.g. '8 in 100 shaded, 92 "
+   "in 100 not'. People read a chance far better as a count than as a "
+   "percentage, and the grid shows the count as a picture. Pass `p` (0 to 1; "
+   "under 0.01 is drawn on 1,000 dots) or `counts` (up to four groups, each "
+   "its own mark), with optional `of` (dots in the grid) and `labels`. Put "
+   "the grid next to the chance it shows.",
+   {"type": "object", "properties": {
+      "p": {"type": "number"},
+      "counts": {"type": "array", "items": {"type": "integer"}},
+      "of": {"type": "integer"},
+      "labels": {"type": "array", "items": {"type": "string"}}}}),
 
  "render_finding": (t_render_finding,
    "Write a standalone HTML page presenting a result in plain English — a "
