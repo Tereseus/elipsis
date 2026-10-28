@@ -1,6 +1,6 @@
 {
   "name": "elipsis",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Claim-checking and forecasting tools: decisions under uncertainty, compound-claim chains, a scored forecast ledger, steelman and entailment audits. Standard-library Python, runs locally.",
   "author": {
     "name": "Tereseus"

@@ -756,11 +756,13 @@ def t_decide_panel(args):
 
 
 # ---------------------------------------------------------------------
-# THE STANDING RULE. Prepended to EVERY tool description below, so that
-# any model calling any tool in this server is told it before it is told
-# what the tool does. Set as an instruction to the caller rather than a
-# feature of the code, because the code cannot make a model explain
-# itself -- only the description can.
+# THE STANDING RULE. Sent once, as the server's `instructions` in the
+# initialize reply, and summarised in SHOW_WORK_SHORT at the head of every
+# tool description, so a client that drops the instructions still sees the
+# core of it. (It used to be prepended in full to all 47 descriptions:
+# about 140,000 characters of the 200,000 in the tool list.) Set as an
+# instruction to the caller rather than a feature of the code, because the
+# code cannot make a model explain itself -- only the description can.
 # ---------------------------------------------------------------------
 
 SHOW_WORK = (
@@ -814,8 +816,15 @@ SHOW_WORK = (
     "working section.\n\n"
     "WHY: the working is there so the reader can "
     "check the reasoning rather than trust the output. A formula nobody "
-    "can read is worse than no formula, because it looks authoritative.\n\n"
-    "---\n\n")
+    "can read is worse than no formula, because it looks authoritative.\n")
+
+SHOW_WORK_SHORT = (
+    "STANDING RULE, ALWAYS SHOW THE MATHS (full text in this server's "
+    "instructions): quote the claim in full and steelman it first; list "
+    "the items behind any count; formula, then numbers substituted, then "
+    "a legend for every symbol and operator; every percentage both ways; "
+    "say what is standard and what is improvised; if there is no "
+    "derivation, say so.\n\n---\n\n")
 
 
 TOOLS = {
@@ -1829,14 +1838,15 @@ def handle(req):
     if m == "initialize":
         return {"jsonrpc": "2.0", "id": rid, "result": {
             "protocolVersion": PROTOCOL, "capabilities": {"tools": {}},
-            "serverInfo": {"name": "elipsis", "version": "0.2.0"}}}
+            "serverInfo": {"name": "elipsis", "version": "0.3.0"},
+            "instructions": SHOW_WORK}}
     if m in ("notifications/initialized", "initialized"):
         return None
     if m == "ping":
         return {"jsonrpc": "2.0", "id": rid, "result": {}}
     if m == "tools/list":
         return {"jsonrpc": "2.0", "id": rid, "result": {"tools": [
-            {"name": n, "description": SHOW_WORK + d, "inputSchema": s}
+            {"name": n, "description": SHOW_WORK_SHORT + d, "inputSchema": s}
             for n, (_, d, s) in TOOLS.items()]}}
     if m == "tools/call":
         p = req.get("params", {})

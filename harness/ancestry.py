@@ -79,7 +79,7 @@ ANCESTRY = [
         "read": "CIA reading room, CIA-RDP93T01132R000100020036-3",
     },
     {
-        "ours": "SHOW_WORK (the standing rules on every tool)",
+        "ours": "SHOW_WORK (the standing rules, sent once to every caller)",
         "theirs": "ICD 203, Intelligence Community Analytic Standards",
         "who": "Office of the Director of National Intelligence",
         "when": "2007, revised 2015",
