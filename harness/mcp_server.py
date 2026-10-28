@@ -72,6 +72,7 @@ import evidence as EV   # noqa: E402
 import operations as OP # noqa: E402
 import loop as LP       # noqa: E402
 import reference_models as RM  # noqa: E402
+import factcheck as FC   # noqa: E402
 import claimrows as CRW     # noqa: E402
 
 OUT = os.path.join(HERE, "..", "web") if paths.DATA == HERE else paths.data("web")
@@ -376,6 +377,11 @@ def t_publication_screen(args):
                "that publishing the answer changes what the answer is for.")
     return "\n".join(out)
 
+
+
+def t_fact_check_lookup(args):
+    """Published fact checks that match a claim."""
+    return FC.report(args.get("query", ""), args.get("limit", 10))
 
 
 def t_evidence(args):
@@ -1813,6 +1819,27 @@ TOOLS = {
         "description": "Is there a public dataset that operationalises "
                        "the inputs?"}},
     "required": ["theory"]}),
+
+ "fact_check_lookup": (t_fact_check_lookup,
+   "HAS THIS CLAIM ALREADY BEEN FACT-CHECKED? Call this early in any claim "
+   "check, before searching from scratch. Searches published fact checks "
+   "(PolitiFact, FactCheck.org, AFP, Full Fact, Snopes and the other outlets "
+   "that publish schema.org ClaimReview markup) through a local index of "
+   "Google's public ClaimReview feed (Data Commons; no key), plus Google's "
+   "live Fact Check Tools API when GOOGLE_FACTCHECK_KEY is set. Pass "
+   "`query`: the claim or its key words (names, numbers, places work best; "
+   "every word is tried first, then any word). Returns each match with the "
+   "outlet, date, their rating as written, who made the claim, their stated "
+   "reason and the link.\n\n"
+   "A MATCH IS A LEAD, NOT A VERDICT: confirm it is the same claim (same "
+   "numbers, place and date) and read the article before citing it. No "
+   "match means nothing is indexed, not that the claim is true. If the "
+   "answer says there is no local copy, it must be built once (about 200 "
+   "MB download); ask the user before doing that.",
+   {"type": "object", "properties": {
+      "query": {"type": "string", "description": "The claim, or its key words."},
+      "limit": {"type": "integer", "description": "How many matches (1 to 30, default 10)."}},
+    "required": ["query"]}),
 
  "render_finding": (t_render_finding,
    "Write a standalone HTML page presenting a result in plain English — a "

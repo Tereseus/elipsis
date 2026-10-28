@@ -36,6 +36,7 @@ CHECKS = [
     ("claim_rows", {"action": "sticking"}, "selftest#1 (phase 2, chance 0.30)"),
     ("steelman", {}, "STEELMAN"),
     ("evidence", {}, "EVIDENCE"),
+    ("fact_check_lookup", {"query": "selftest claim"}, "FACT-CHECK LOOKUP"),
 ]
 
 
