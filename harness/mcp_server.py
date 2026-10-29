@@ -1449,7 +1449,14 @@ TOOLS = {
    "topic as separate lists (`mode`, `topic`). Where a market prices the "
    "question, the market price IS the baseline. A corrected probability is "
    "stored alongside yours, pulled toward the baseline by the k the record "
-   "supports; both are scored.",
+   "supports; both are scored. The baseline should be COUNTED: "
+   "baseline.count = {yes, of, source} from past cases of the same kind "
+   "(made into a chance by (yes+1)/(of+2)), or a market price, or "
+   "'nothing changes' (kind: persistence). A guessed baseline must give "
+   "baseline.why_no_count. A forecast more than 0.10 from its baseline must "
+   "give `departure`: what this case has that the usual case lacks. Big moves "
+   "from the starting number are where overconfidence shows, and the report "
+   "scores them apart.",
    {"type": "object", "properties": {"claim": {"type": "object"}},
     "required": ["claim"]}),
 

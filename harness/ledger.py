@@ -33,7 +33,16 @@ Five disciplines it enforces:
      raw and corrected numbers are scored side by side, so the ledger shows
      whether correcting helps rather than assuming it.
 
-  5. NOTHING IS OVERWRITTEN. A rerun on new information is a new dated
+  5. THE STARTING NUMBER IS COUNTED, AND MOVING AWAY FROM IT NEEDS A REASON.
+     The baseline should be a count of past cases ("yes" of "of", from a
+     named source, turned into a chance by Laplace's rule (yes+1)/(of+2)), a
+     market price, or "nothing changes". A guessed baseline must say why no
+     count exists. A forecast more than DEPART from its baseline must say,
+     in "departure", what this case has that the usual case lacks. Big moves
+     away from the starting number are where overconfidence shows, so the
+     report scores them apart.
+
+  6. NOTHING IS OVERWRITTEN. A rerun on new information is a new dated
      forecast that points at the one it revises. Overwrite, and you can always
      "update" to the answer the day before it resolves and look brilliant.
 
@@ -100,6 +109,13 @@ PRIOR_K = 0.5
 PRIOR_WEIGHT = 10
 K_FLOOR, K_CEIL = 0.0, 1.5   # never bet against yourself; allow extra trust
 MODE_MIN = 20                # a mode gets its own k only after this many
+
+# A forecast may move this far from its starting number without a written
+# reason. Further than this, "departure" must say why this case is unusual.
+DEPART = 0.10
+MARKET_WORDS = ("polymarket", "manifold", "kalshi", "metaculus",
+                "market price", "price ")
+BASELINE_KINDS = ("counted", "market", "persistence", "guessed")
 
 REQUIRED = ("id", "claim", "resolves", "probability",
             "resolution_criteria", "baseline", "reasoning")
@@ -218,6 +234,46 @@ def placeholder_baseline(c):
 
 def base_p(c):
     return c.get("baseline", {}).get("probability", 0.5)
+
+
+def baseline_kind(c):
+    """Where the starting number came from: a count of past cases, a market
+    price, "nothing changes", or a guess. Older records without a stated
+    kind are read from their wording."""
+    b = c.get("baseline", {})
+    if b.get("kind") in BASELINE_KINDS:
+        return b["kind"]
+    if b.get("count"):
+        return "counted"
+    what = (b.get("what") or "").lower()
+    if "counted" in what:
+        return "counted"
+    if any(w in what for w in MARKET_WORDS):
+        return "market"
+    if "persistence" in what or "nothing changes" in what:
+        return "persistence"
+    return "guessed"
+
+
+def departure(c):
+    return c["probability"] - base_p(c)
+
+
+def moved_right(c):
+    """Did moving away from the starting number point toward what happened?"""
+    return (departure(c) > 0) == (outcome01(c) > base_p(c))
+
+
+def departure_record(rs):
+    """How forecasts that moved more than DEPART from their starting number
+    have done: (n, moved the right way, your Brier, the baseline's Brier)."""
+    far = [c for c in rs if abs(departure(c)) > DEPART]
+    if not far:
+        return None
+    right = sum(1 for c in far if moved_right(c))
+    mine = sum(brier(c["probability"], c["resolved"]["outcome"]) for c in far) / len(far)
+    base = sum(brier(base_p(c), c["resolved"]["outcome"]) for c in far) / len(far)
+    return len(far), right, mine, base
 
 
 def outcome01(c):
@@ -598,6 +654,25 @@ def score(d):
               f"      {said:.2f}        {happened:.2f}      {gap:+.2f}{flag}")
     print()
 
+    # Overconfidence shows in big moves away from the starting number.
+    print(f"  MOVING AWAY FROM THE STARTING NUMBER (over {DEPART:.2f} needs a reason)")
+    print("  " + "-" * 60)
+    near = [c for c in rs if abs(departure(c)) <= DEPART]
+    far = [c for c in rs if abs(departure(c)) > DEPART]
+    for label, grp in ((f"within {DEPART:.2f}", near), (f"over {DEPART:.2f}", far)):
+        if not grp:
+            continue
+        moved = [c for c in grp if departure(c) != 0]
+        right = sum(1 for c in moved if moved_right(c))
+        mb = sum(brier(c["probability"], c["resolved"]["outcome"]) for c in grp) / len(grp)
+        bb = sum(brier(base_p(c), c["resolved"]["outcome"]) for c in grp) / len(grp)
+        print(f"  {label:<12} n={len(grp):<3} right way {right} of {len(moved):<3} "
+              f"yours {mb:.3f}  starting number {bb:.3f}"
+              + ("   <-- moving hurt" if mb > bb else ""))
+    print()
+    _group_table("BY STARTING NUMBER (counted, market, persistence, guessed)",
+                 rs, lambda c: [baseline_kind(c)])
+
     # Which of your reasoning modes is wrong -- and, separately, where.
     rows = _group_table("BY REASONING MODE", rs, modes)
     if rows:
@@ -743,10 +818,41 @@ def add(d, c):
                            f"would have counted and you will decide you were right.")
     if find(d, c["id"]):
         return False, f"A claim with id '{c['id']}' already exists."
-    if "probability" not in c["baseline"]:
-        return False, "The baseline needs a probability."
+    b = c["baseline"]
+    cnt = b.get("count")
+    if cnt is not None:
+        try:
+            yes, of = int(cnt["yes"]), int(cnt["of"])
+        except (KeyError, TypeError, ValueError):
+            return False, ("baseline.count needs whole numbers 'yes' and 'of': how "
+                           "many past cases like this one went yes, out of how many.")
+        if of <= 0 or not 0 <= yes <= of:
+            return False, "baseline.count needs 0 <= yes <= of, with of above 0."
+        if not cnt.get("source"):
+            return False, "baseline.count needs a 'source': where the cases were counted."
+        # Laplace's rule of succession: a count never gives exactly 0 or 1.
+        b["probability"] = round((yes + 1) / (of + 2), 4)
+    if "probability" not in b:
+        return False, "The baseline needs a probability, or a count to make one."
+    b["kind"] = baseline_kind(c)
+    if b["kind"] == "guessed" and not b.get("why_no_count"):
+        return False, ("The starting number is a guess. Count it instead: baseline.count "
+                       "= {yes, of, source} from past cases of the same kind, or use a "
+                       "market price, or 'nothing changes' (kind: persistence). If no "
+                       "count can exist, say why in baseline.why_no_count.")
     if not 0.0 <= c["probability"] <= 1.0:
         return False, "Probability must be between 0 and 1."
+    move = c["probability"] - b["probability"]
+    rec = departure_record(scored(d))
+    if abs(move) > DEPART and not c.get("departure"):
+        hist = ("" if rec is None else
+                f" So far, forecasts that moved this far went the right way {rec[1]} "
+                f"of {rec[0]} times, with error {rec[2]:.3f} against {rec[3]:.3f} for "
+                f"the starting number.")
+        return False, (f"This forecast ({c['probability']:.2f}) is {abs(move):.2f} from its "
+                       f"starting number ({b['probability']:.2f}). Moves over {DEPART:.2f} "
+                       f"need 'departure': what this case has that the usual case lacks."
+                       + hist)
     c.setdefault("made", today())
     for key in ("mode", "topic"):
         # A bare string would be split letter by letter into the tags below.
@@ -769,6 +875,10 @@ def add(d, c):
         msg.append("WARNING: this resolves on or before the day it was logged. A "
                    "forecast logged after its answer is public scores as a free "
                    "win -- check nothing has already settled it.")
+    if abs(move) > DEPART and rec is not None:
+        msg.append(f"This moves {abs(move):.2f} from the starting number. Past moves that "
+                   f"big went the right way {rec[1]} of {rec[0]} times (error "
+                   f"{rec[2]:.3f} against {rec[3]:.3f} for the starting number).")
     if placeholder_baseline(c):
         msg.append("WARNING: the baseline is a placeholder coin flip, so the "
                    "correction pulls this toward 50%. Find a market price or a "
@@ -923,9 +1033,11 @@ TEMPLATE = """{
   "probability": 0.70,
   "resolution_criteria": "EXACTLY what would count as this being true. Write it now. You will not be honest about it later.",
   "baseline": {
-    "what": "the market price if one exists, else the base rate -- the dumb answer",
-    "probability": 0.50
+    "what": "the market price if one exists, else a count of past cases like this",
+    "count": {"yes": 12, "of": 40, "source": "where the 40 cases were counted"},
+    "kind": "counted"
   },
+  "departure": "needed only if the forecast is over 0.10 from the baseline: what this case has that the usual case lacks",
   "reasoning": "why you think so. you will want this when you are wrong.",
   "mode": ["search-prediction"],
   "topic": ["geopolitics"]
