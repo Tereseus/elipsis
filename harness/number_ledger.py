@@ -11,7 +11,10 @@ A forecast is a MEDIAN (the single best guess: half the chance below, half
 above) and, if you can, a LOW and HIGH (the 10th and 90th percentiles, so the
 truth should land between them 8 times in 10). Every forecast carries a
 BASELINE value, the dumb answer (last month's figure, the consensus), and the
-score asks whether you beat it.
+score asks whether you beat it. A median that differs from the baseline needs a
+written "departure": what this case has that the usual week or month lacks.
+Moving away from the dumb answer without a reason is where overconfidence
+shows (ledger.py scores the same rule for yes/no questions).
 
 Scores, all of which reward reporting what you actually believe:
   absolute error   |median - actual|; the best single number to give under this
@@ -34,7 +37,12 @@ the forecast resolves itself, with no judgement. Supported:
   {"type": "bls", "series": "LNS14000000", "period": "2026-M10", "transform": "value"}
   {"type": "bls", "series": "CES0000000001", "period": "2026-M10", "transform": "change"}
 (US Bureau of Labor Statistics public API, no key; "change" is the period minus
-the period before.) {"type": "manual", "where": "..."} says where to look by hand.
+the period before.)
+  {"type": "fred", "series": "ICSA", "date": "2026-10-31"}
+(a FRED series from its keyless CSV download; "date" is the observation date
+as FRED lists it, for weekly jobless claims the Saturday the week ends. Run
+the morning after release, FRED still holds the first published figure.)
+{"type": "manual", "where": "..."} says where to look by hand.
 The free daily run (gapwatch.py) calls autoresolve() every morning.
 
 Run:  python harness/number_ledger.py                  -- open forecasts, due first
@@ -69,6 +77,7 @@ TEMPLATE = {
     "median": 0.0, "low": None, "high": None, "unit": "",
     "resolution_criteria": "Which release, which figure (first print or revised).",
     "baseline": {"value": 0.0, "what": "Last value, or the published consensus."},
+    "departure": "Needed only if the median differs from the baseline: why.",
     "reasoning": "Why this median and range. Written before looking at any consensus.",
 }
 
@@ -124,6 +133,10 @@ def add(d, f):
         return False, "Give both low and high, or neither."
     if lo is not None and not lo <= f["median"] <= hi:
         return False, "Need low <= median <= high."
+    if f["median"] != f["baseline"]["value"] and not f.get("departure"):
+        return False, (f"The median {f['median']} differs from the baseline "
+                       f"{f['baseline']['value']}. Give 'departure': what this case "
+                       f"has that the usual one lacks, or use the baseline as the median.")
     f.setdefault("made", date.today().isoformat())
     f["resolved"] = None
     d["forecasts"].append(f)
@@ -174,21 +187,41 @@ def bls_fetch(series):
     return out
 
 
+FRED_CSV = "https://fred.stlouisfed.org/graph/fredgraph.csv?id="
+
+
+def fred_fetch(series):
+    """{series: {"2026-10-24": value}} from FRED's keyless CSV download."""
+    out = {}
+    for sid in sorted(series):
+        # FRED resets connections from some bare user agents; a browser-style one works.
+        req = urllib.request.Request(FRED_CSV + sid,
+                                     headers={"User-Agent": "Mozilla/5.0 (Elipsis keyless)"})
+        text = urllib.request.urlopen(req, timeout=40).read().decode("utf-8")
+        vals = {}
+        for line in text.splitlines()[1:]:
+            day, _, v = line.partition(",")
+            if v.strip() not in ("", "."):
+                vals[day.strip()] = float(v)
+        out[sid] = vals
+    return out
+
+
 def _prev_month(period):
     y, m = int(period[:4]), int(period[-2:])
     y, m = (y - 1, 12) if m == 1 else (y, m - 1)
     return f"{y}-M{m:02d}"
 
 
-def autoresolve(d, fetch=bls_fetch, on=None):
+def autoresolve(d, fetch=bls_fetch, on=None, fred=fred_fetch):
     """Settle every due forecast whose source can answer. Returns lines saying what happened."""
     on = on or date.today().isoformat()
+    out = _fred_resolve(d, fred, on)
     due = [f for f in d["forecasts"] if not f.get("resolved") and f["resolves"] <= on
            and (f.get("source") or {}).get("type") == "bls"]
     if not due:
-        return []
+        return out
     data = fetch({f["source"]["series"] for f in due})
-    out = []
     for f in due:
         src = f["source"]
         vals = data.get(src["series"], {})
@@ -205,6 +238,31 @@ def autoresolve(d, fetch=bls_fetch, on=None):
                 continue
             y = round(y - vals[p0], 3)
         note = f"auto: BLS {src['series']} {src['period']} ({src.get('transform', 'value')}) = {y:g}, fetched {on}"
+        ok, msg = resolve(d, f["id"], y, note)
+        out.append(msg)
+        if ok:
+            out += settle_links(f, y, note)
+    return out
+
+
+def _fred_resolve(d, fetch, on):
+    due = [f for f in d["forecasts"] if not f.get("resolved") and f["resolves"] <= on
+           and (f.get("source") or {}).get("type") == "fred"]
+    if not due:
+        return []
+    try:
+        data = fetch({f["source"]["series"] for f in due})
+    except Exception as e:  # a FRED outage must not stop the BLS forecasts settling
+        return [f"FRED fetch failed ({e}); {len(due)} forecast(s) left for the next run"]
+    out = []
+    for f in due:
+        src = f["source"]
+        vals = data.get(src["series"], {})
+        if src["date"] not in vals:
+            out.append(f"[{f['id']}] FRED {src['series']} {src['date']} not published yet")
+            continue
+        y = vals[src["date"]]
+        note = f"auto: FRED {src['series']} {src['date']} = {y:g}, fetched {on}"
         ok, msg = resolve(d, f["id"], y, note)
         out.append(msg)
         if ok:
