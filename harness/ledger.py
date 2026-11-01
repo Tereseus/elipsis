@@ -41,6 +41,11 @@ Five disciplines it enforces:
      in "departure", what this case has that the usual case lacks. Big moves
      away from the starting number are where overconfidence shows, so the
      report scores them apart.
+     When the starting number is a market price, the market's own rules are
+     copied in full into "market_rules", and "wording_vs_market" says whether
+     resolution_criteria means the same thing ("same") or what differs. A
+     paraphrase of cut-short rules can ask a different question from the one
+     the market settles, and then the market's result cannot settle it.
 
   6. NOTHING IS OVERWRITTEN. A rerun on new information is a new dated
      forecast that points at the one it revises. Overwrite, and you can always
@@ -425,6 +430,9 @@ def show_open(d, only_due=False):
             print(f"  [{c['id']}]  resolved by {c['resolves']}  p={c['probability']:.2f}")
             print(f"    {c['claim']}")
             print(f"    counts as true if: {c['resolution_criteria']}")
+            wvm = str(c.get("wording_vs_market") or "").strip()
+            if wvm and wvm.lower() != "same":
+                print(f"    differs from the market: {wvm} (settle on the words above)")
             print(f"    → python harness/ledger.py resolve {c['id']} yes|no|unresolvable")
             print()
     elif only_due:
@@ -840,6 +848,17 @@ def add(d, c):
                        "= {yes, of, source} from past cases of the same kind, or use a "
                        "market price, or 'nothing changes' (kind: persistence). If no "
                        "count can exist, say why in baseline.why_no_count.")
+    if b["kind"] == "market":
+        rules = (c.get("market_rules") or "").strip()
+        if (len(rules) < 40 or rules.endswith(("...", "…"))
+                or "truncated" in rules.lower()):
+            return False, ("The starting number is a market price. Copy the market's own "
+                           "rules in full into 'market_rules' (read the market page: feeds "
+                           "cut them short).")
+        if not str(c.get("wording_vs_market") or "").strip():
+            return False, ("Say in 'wording_vs_market' whether resolution_criteria means "
+                           "what the market's rules mean: 'same', or what differs, so the "
+                           "market's result is not used for a different question.")
     if not 0.0 <= c["probability"] <= 1.0:
         return False, "Probability must be between 0 and 1."
     move = c["probability"] - b["probability"]
@@ -1038,6 +1057,8 @@ TEMPLATE = """{
     "kind": "counted"
   },
   "departure": "needed only if the forecast is over 0.10 from the baseline: what this case has that the usual case lacks",
+  "market_rules": "needed only when the baseline is a market price: the market's own rules, copied in full",
+  "wording_vs_market": "needed with market_rules: 'same', or what differs from the market's rules",
   "reasoning": "why you think so. you will want this when you are wrong.",
   "mode": ["search-prediction"],
   "topic": ["geopolitics"]
