@@ -92,7 +92,7 @@ python harness/gaphistory.py fetch-approvals
 
 ## What it connects to
 
-Nothing runs in the background, nothing is sent anywhere when the server starts, and no tool sends personal data, files or conversation text. The network is used in three places only.
+The full privacy policy is in [PRIVACY.md](PRIVACY.md). Nothing runs in the background, nothing is sent anywhere when the server starts, and no tool sends personal data, files or conversation text. The network is used in three places only.
 
 1. **The `fact_check_lookup` tool.** It searches a local index of published fact checks. You build that index once by hand with `python harness/factcheck.py fetch`, which downloads Google's public ClaimReview feed (about 200 MB, from `storage.googleapis.com`). If you run Elipsis from a clone and set a `GOOGLE_FACTCHECK_KEY` environment variable yourself (optional), the tool also sends your search words, with that key, to `factchecktools.googleapis.com`. The plugin never sets one, so as a plugin it never contacts Google.
 2. **Settling number forecasts by hand.** `python harness/number_ledger.py auto` fetches the published figure from `api.bls.gov` (US Bureau of Labor Statistics) or `fred.stlouisfed.org` (Federal Reserve Bank of St. Louis), for forecasts that name one of those sources.
