@@ -22,12 +22,23 @@ The full list of tools, with one line each, is in [TOOLS.md](TOOLS.md). Every to
 
 ### 1. As a Claude Code plugin (recommended)
 
-In Claude Code:
+At the prompt of a Claude Code terminal session:
 
 ```
-/plugin marketplace add https://github.com/Tereseus/elipsis.git
-/plugin install elipsis@elipsis
+/plugin install elipsis --marketplace Tereseus/elipsis
 ```
+
+Answer `y` to add the marketplace, then pick a scope (user scope makes it available in every project). From a shell, the same is:
+
+```
+claude plugin install elipsis --marketplace Tereseus/elipsis
+```
+
+In the Claude desktop app, where `/plugin` does not run: click + next to the prompt box, then Plugins, Add marketplace with `Tereseus/elipsis`, then Add plugin.
+
+The plugin brings the tool server and two skills: `elipsis` (how to answer: roughness first, the steelman, formulas with legends, percentages both ways) and `forecast` (how to log, settle and score a forecast in the ledger).
+
+The plugin starts the server with `python`. If your computer only has `python3` (most Macs and many Linux systems), set `ELIPSIS_PYTHON=python3` in your environment before starting Claude Code. On Windows, `ELIPSIS_PYTHON=py` does the same if only `py` works.
 
 Your saved work (forecasts, decisions, chains) is kept in Claude Code's plugin data folder, so it survives updates. The tools start empty: nothing is saved until you save it.
 
@@ -59,7 +70,7 @@ Claude Desktop and other MCP clients take the same command in their own settings
 
 ## Requirements
 
-- Python 3 on your PATH as `python` (tested on 3.13).
+- Python 3 on your PATH as `python` (tested on 3.13). For the plugin, `ELIPSIS_PYTHON` names a different command, such as `python3`.
 - Windows: install Python from python.org and tick "Add python.exe to PATH". If only `py` works on your machine, replace `python` with `py` in the commands above or in `.mcp.json`.
 
 Check that everything works:

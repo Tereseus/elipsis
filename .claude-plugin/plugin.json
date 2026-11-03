@@ -10,7 +10,7 @@
   "license": "MIT",
   "mcpServers": {
     "elipsis": {
-      "command": "python",
+      "command": "${ELIPSIS_PYTHON:-python}",
       "args": [
         "${CLAUDE_PLUGIN_ROOT}/harness/mcp_server.py"
       ],
