@@ -15,18 +15,8 @@
         "${CLAUDE_PLUGIN_ROOT}/harness/mcp_server.py"
       ],
       "env": {
-        "ELIPSIS_DATA": "${CLAUDE_PLUGIN_DATA}",
-        "GOOGLE_FACTCHECK_KEY": "${user_config.google_factcheck_key}"
+        "ELIPSIS_DATA": "${CLAUDE_PLUGIN_DATA}"
       }
-    }
-  },
-  "userConfig": {
-    "google_factcheck_key": {
-      "type": "string",
-      "title": "Google Fact Check API key (optional)",
-      "description": "Lets fact_check_lookup also search Google's live Fact Check API. Leave empty to search only the local copy.",
-      "sensitive": true,
-      "required": false
     }
   }
 }
