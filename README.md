@@ -4,7 +4,7 @@ Tools for checking claims and making forecasts with Claude. The model does the l
 
 (One L in the name, on purpose.)
 
-Elipsis is an MCP server. MCP, the Model Context Protocol, is the standard way to give Claude extra tools. This one runs on your own computer and needs only Python 3: no account, no API key, no hosting, no other packages. The tools run offline. Only the gap-map update scripts, which you run by hand, read public research databases (OpenAlex, ClinicalTrials.gov and others), and they send no personal data.
+Elipsis is an MCP server. MCP, the Model Context Protocol, is the standard way to give Claude extra tools. This one runs on your own computer and needs only Python 3: no account, no API key, no hosting, no other packages. Almost every tool works offline. What goes over the network, and when, is listed under [What it connects to](#what-it-connects-to).
 
 ## What it does
 
@@ -89,6 +89,14 @@ One tool, `simulate_futures`, needs a base-rate database of past clinical trials
 python harness/gaphistory.py fetch-trials
 python harness/gaphistory.py fetch-approvals
 ```
+
+## What it connects to
+
+Nothing runs in the background, nothing is sent anywhere when the server starts, and no tool sends personal data, files or conversation text. The network is used in three places only.
+
+1. **The `fact_check_lookup` tool.** It searches a local index of published fact checks. You build that index once by hand with `python harness/factcheck.py fetch`, which downloads Google's public ClaimReview feed (about 200 MB, from `storage.googleapis.com`). If you enter a Google Fact Check API key in the plugin's settings (optional, stored as a secret), the tool also sends your search words to `factchecktools.googleapis.com`. With no key it never contacts Google.
+2. **Settling number forecasts by hand.** `python harness/number_ledger.py auto` fetches the published figure from `api.bls.gov` (US Bureau of Labor Statistics) or `fred.stlouisfed.org` (Federal Reserve Bank of St. Louis), for forecasts that name one of those sources.
+3. **Gap-map scripts, run by hand.** `gapmap.py`, `gapmap_daily.py`, `gapmap_topics.py`, `gapsources.py` and `gaphistory.py` query public research and news databases: `api.openalex.org`, `clinicaltrials.gov`, `europepmc.org`, `www.ebi.ac.uk`, `www.gap-map.org`, `doi.org`, `export.arxiv.org`, `api.jstage.jst.go.jp`, `api.nsf.gov`, `www.nsf.gov`, `api.reporter.nih.gov`, `www.osti.gov`, `www.federalregister.gov`, `news.google.com`, `api.fda.gov`, `api.manifold.markets` and `web.archive.org`. They send search terms only, with no email address or other personal data. OpenAlex's free allowance is about 1,000 requests a day, and the scripts stop themselves below a reserve.
 
 ## Where saved work goes
 

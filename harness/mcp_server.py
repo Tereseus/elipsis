@@ -1874,7 +1874,7 @@ def handle(req):
     if m == "initialize":
         return {"jsonrpc": "2.0", "id": rid, "result": {
             "protocolVersion": PROTOCOL, "capabilities": {"tools": {}},
-            "serverInfo": {"name": "elipsis", "version": "0.3.0"},
+            "serverInfo": {"name": "elipsis", "version": "0.4.0"},
             "instructions": SHOW_WORK}}
     if m in ("notifications/initialized", "initialized"):
         return None
