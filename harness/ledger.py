@@ -716,6 +716,11 @@ def score(d):
 
     print("  Brier: 0 is perfect, 0.25 is what you get by always saying 50%,")
     print("  1.0 is confidently wrong every time. Lower is better.")
+    try:
+        import forecast_tiers
+        forecast_tiers.report(d)
+    except ImportError:
+        pass
 
 
 def show_calibration(d):

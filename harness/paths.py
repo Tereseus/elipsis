@@ -16,10 +16,7 @@ SAVED = ("frames", "budgets", "claims", "entail", "ledger", "decisions", "trials
 
 
 def _pick():
-    for v in (os.environ.get("ELIPSIS_DATA"), os.environ.get("CLAUDE_PLUGIN_DATA")):
-        if v and "${" not in v:          # an unexpanded placeholder counts as unset
-            return os.path.abspath(os.path.expanduser(v))
-    return HERE
+    return HERE   # a clone keeps saved work here; run_tool.py --data moves it
 
 
 DATA = _pick()
@@ -30,6 +27,16 @@ for _sub in SAVED:
         os.makedirs(os.path.join(DATA, _sub), exist_ok=True)
     except OSError:
         pass
+
+
+def use(folder):
+    """Keep saved work in `folder` from now on. Call before importing any tool module,
+    since each one fixes its file paths when it is imported. run_tool.py calls this
+    with the folder named on its command line (the plugin's data folder)."""
+    global DATA
+    DATA = os.path.abspath(os.path.expanduser(folder))
+    for sub in SAVED:
+        os.makedirs(os.path.join(DATA, sub), exist_ok=True)
 
 
 def data(*parts):

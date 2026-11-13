@@ -5,6 +5,8 @@ description: How to log, settle and score a forecast with the Elipsis ledger. Us
 
 # Forecasting with the Elipsis ledger
 
+The `ledger_*` tools named below are run as the `elipsis-ledger` skill shows.
+
 A probability that was never written down before the answer was known cannot be scored. The ledger exists to write it down first.
 
 ## Logging a forecast

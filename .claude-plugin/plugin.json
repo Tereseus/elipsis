@@ -1,22 +1,11 @@
 {
   "name": "elipsis",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Claim-checking and forecasting tools: decisions under uncertainty, compound-claim chains, a scored forecast ledger, steelman and entailment audits. Standard-library Python, runs locally.",
   "author": {
     "name": "Tereseus"
   },
   "homepage": "https://github.com/Tereseus/elipsis",
   "repository": "https://github.com/Tereseus/elipsis",
-  "license": "MIT",
-  "mcpServers": {
-    "elipsis": {
-      "command": "${ELIPSIS_PYTHON:-python}",
-      "args": [
-        "${CLAUDE_PLUGIN_ROOT}/harness/mcp_server.py"
-      ],
-      "env": {
-        "ELIPSIS_DATA": "${CLAUDE_PLUGIN_DATA}"
-      }
-    }
-  }
+  "license": "MIT"
 }

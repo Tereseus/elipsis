@@ -5,6 +5,8 @@ description: How to answer with the Elipsis tools. Use when checking a claim, we
 
 # Answering with Elipsis
 
+The tools themselves are scripts inside this plugin. The six `elipsis-*` skills (claims, chains, decisions, ledger, trials, gap map) list them and give the command that runs each one.
+
 1. Say how rough the answer is (measured, estimated or guessed) before giving any number.
 2. Quote the claim being checked in full. Give its strongest version (the steelman, via the `steelman` tool) before auditing it, and list what you supplied to build it. Refuting the wording while the argument survives is a failure, not a finding.
 3. Show each formula in standard notation, then with the numbers substituted, then a legend that defines every symbol in plain English.

@@ -43,7 +43,7 @@ CHECKS = [
 def main():
     data = tempfile.mkdtemp(prefix="elipsis-selftest-")
     env = dict(os.environ, ELIPSIS_DATA=data, PYTHONIOENCODING="utf-8")
-    p = subprocess.Popen([sys.executable, os.path.join(HERE, "mcp_server.py")],
+    p = subprocess.Popen([sys.executable, os.path.join(HERE, "mcp_server.py"), "--data", data],
                          stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                          text=True, encoding="utf-8", env=env)
     ids = iter(range(1, 10**6))

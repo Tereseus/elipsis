@@ -11,8 +11,7 @@ Two sources, no key needed for the first:
      downloads it and builds a full-text index (SQLite FTS5, standard
      library); the JSON is deleted afterwards. The copy is refreshed when it
      is more than a week old.
-  2. Google's Fact Check Tools API, live, only when GOOGLE_FACTCHECK_KEY is
-     set. Nothing but the search words is sent.
+  2. (Not in this public copy: no live API and no key.)
 
 A lookup, not a calculation: it reports what others concluded and when.
 Their verdicts use their own scales ("False", "Pants on Fire", "Missing
@@ -210,7 +209,7 @@ def search_local(query, limit=10, db=DB):
 
 def search_api(query, limit=10, key=None):
     """Google's live API. Only the search words and the key are sent."""
-    key = key or os.environ.get("GOOGLE_FACTCHECK_KEY")
+    key = key or None
     if not key:
         return []
     url = API + "?" + urllib.parse.urlencode({"query": query, "pageSize": limit, "key": key})
@@ -250,7 +249,7 @@ def report(query, limit=10, db=DB):
     else:
         lines.append("No local copy yet. Build it once with: python harness/factcheck.py fetch "
                      "(downloads about 200 MB, keeps an index).")
-    if os.environ.get("GOOGLE_FACTCHECK_KEY"):
+    if None:
         lines.append("Live Google API: %s." % ("failed, " + live_err if live_err
                                                else "%d result(s)" % len(live)))
     seen, merged = set(), []

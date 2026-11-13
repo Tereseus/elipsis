@@ -4,7 +4,7 @@ Tools for checking claims and making forecasts with Claude. The model does the l
 
 (One L in the name, on purpose.)
 
-Elipsis is an MCP server. MCP, the Model Context Protocol, is the standard way to give Claude extra tools. This one runs on your own computer and needs only Python 3: no account, no API key, no hosting, no other packages. Almost every tool works offline. What goes over the network, and when, is listed under [What it connects to](#what-it-connects-to).
+Elipsis is a set of tools that run on your own computer as plain Python scripts. As a Claude plugin, each group of tools comes as a skill that tells Claude which script to run. The same tools can also be served over MCP, the Model Context Protocol, for other clients. Either way they need only Python 3: no account, no API key, no hosting, no other packages. Almost every tool works offline. What goes over the network, and when, is listed under [What it connects to](#what-it-connects-to).
 
 ## What it does
 
@@ -36,9 +36,9 @@ claude plugin install elipsis --marketplace Tereseus/elipsis
 
 In the Claude desktop app, where `/plugin` does not run: click + next to the prompt box, then Plugins, Add marketplace with `Tereseus/elipsis`, then Add plugin.
 
-The plugin brings the tool server and two skills: `elipsis` (how to answer: roughness first, the steelman, formulas with legends, percentages both ways) and `forecast` (how to log, settle and score a forecast in the ledger).
+The plugin brings eight skills and no server. Two say how to work: `elipsis` (how to answer: roughness first, the steelman, formulas with legends, percentages both ways) and `forecast` (how to log, settle and score a forecast in the ledger). Six run the tools, grouped by job: `elipsis-claims`, `elipsis-chains`, `elipsis-decisions`, `elipsis-ledger`, `elipsis-trials` and `elipsis-gapmap`. Each one lists its tools and has Claude run `harness/run_tool.py` from the plugin folder.
 
-The plugin starts the server with `python`. If your computer only has `python3` (most Macs and many Linux systems), set `ELIPSIS_PYTHON=python3` in your environment before starting Claude Code. On Windows, `ELIPSIS_PYTHON=py` does the same if only `py` works.
+Claude runs the scripts with `python`, or `python3` or `py` where that is the command your computer has. Nothing needs setting.
 
 Your saved work (forecasts, decisions, chains) is kept in Claude Code's plugin data folder, so it survives updates. The tools start empty: nothing is saved until you save it.
 
@@ -50,7 +50,7 @@ cd elipsis
 claude
 ```
 
-Claude Code asks once whether to use the `elipsis` server in this folder; say yes. Saved work stays inside the clone, in `harness/`.
+Ask Claude to run any tool with `python harness/run_tool.py TOOL '{...}'` (`--list` shows them all), or add the server as in the next section. Saved work stays inside the clone, in `harness/`.
 
 ### 3. Any other MCP client
 
@@ -70,8 +70,8 @@ Claude Desktop and other MCP clients take the same command in their own settings
 
 ## Requirements
 
-- Python 3 on your PATH as `python` (tested on 3.13). For the plugin, `ELIPSIS_PYTHON` names a different command, such as `python3`.
-- Windows: install Python from python.org and tick "Add python.exe to PATH". If only `py` works on your machine, replace `python` with `py` in the commands above or in `.mcp.json`.
+- Python 3 on your PATH (tested on 3.13), as `python`, `python3` or `py`.
+- Windows: install Python from python.org and tick "Add python.exe to PATH". If only `py` works on your machine, use `py` in place of `python` in the commands above.
 
 Check that everything works:
 
@@ -92,9 +92,9 @@ python harness/gaphistory.py fetch-approvals
 
 ## What it connects to
 
-The full privacy policy is in [PRIVACY.md](PRIVACY.md). Nothing runs in the background, nothing is sent anywhere when the server starts, and no tool sends personal data, files or conversation text. The network is used in three places only.
+The full privacy policy is in [PRIVACY.md](PRIVACY.md). Nothing runs in the background, nothing is sent anywhere when a tool starts, and no tool sends personal data, files or conversation text. The network is used in three places only.
 
-1. **The `fact_check_lookup` tool.** It searches a local index of published fact checks. You build that index once by hand with `python harness/factcheck.py fetch`, which downloads Google's public ClaimReview feed (about 200 MB, from `storage.googleapis.com`). If you run Elipsis from a clone and set a `GOOGLE_FACTCHECK_KEY` environment variable yourself (optional), the tool also sends your search words, with that key, to `factchecktools.googleapis.com`. The plugin never sets one, so as a plugin it never contacts Google.
+1. **The `fact_check_lookup` tool.** It searches a local index of published fact checks. You build that index once by hand with `python harness/factcheck.py fetch`, which downloads Google's public ClaimReview feed (about 200 MB, from `storage.googleapis.com`). The lookup itself is local: it never contacts Google or any other service, and it uses no API key.
 2. **Settling number forecasts by hand.** `python harness/number_ledger.py auto` fetches the published figure from `api.bls.gov` (US Bureau of Labor Statistics) or `fred.stlouisfed.org` (Federal Reserve Bank of St. Louis), for forecasts that name one of those sources.
 3. **Gap-map scripts, run by hand.** `gapmap.py`, `gapmap_daily.py`, `gapmap_topics.py`, `gapsources.py` and `gaphistory.py` query public research and news databases: `api.openalex.org`, `clinicaltrials.gov`, `europepmc.org`, `www.ebi.ac.uk`, `www.gap-map.org`, `doi.org`, `export.arxiv.org`, `api.jstage.jst.go.jp`, `api.nsf.gov`, `www.nsf.gov`, `api.reporter.nih.gov`, `www.osti.gov`, `www.federalregister.gov`, `news.google.com`, `api.fda.gov`, `api.manifold.markets` and `web.archive.org`. They send search terms only, with no email address or other personal data. OpenAlex's free allowance is about 1,000 requests a day, and the scripts stop themselves below a reserve.
 
@@ -104,7 +104,7 @@ The full privacy policy is in [PRIVACY.md](PRIVACY.md). Nothing runs in the back
 |---|---|
 | Plugin | `~/.claude/plugins/data/<plugin id>/` |
 | Clone | `harness/` inside the clone |
-| Your choice | Set the `ELIPSIS_DATA` environment variable to any folder |
+| Your choice | Pass `--data FOLDER` to `harness/run_tool.py` |
 
 ## A worked example
 

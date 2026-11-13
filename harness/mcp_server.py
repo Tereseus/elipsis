@@ -48,6 +48,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 
 import paths           # noqa: E402
+if __name__ == "__main__" and "--data" in sys.argv[1:-1]:
+    paths.use(sys.argv[sys.argv.index("--data") + 1])   # before the tools fix their paths
 import frame as F       # noqa: E402
 import budget as B      # noqa: E402
 import lineage as L     # noqa: E402
@@ -1834,8 +1836,7 @@ TOOLS = {
    "check, before searching from scratch. Searches published fact checks "
    "(PolitiFact, FactCheck.org, AFP, Full Fact, Snopes and the other outlets "
    "that publish schema.org ClaimReview markup) through a local index of "
-   "Google's public ClaimReview feed (Data Commons; no key), plus Google's "
-   "live Fact Check Tools API when GOOGLE_FACTCHECK_KEY is set. Pass "
+   "Google's public ClaimReview feed (Data Commons; no key). Pass "
    "`query`: the claim or its key words (names, numbers, places work best; "
    "every word is tried first, then any word). Returns each match with the "
    "outlet, date, their rating as written, who made the claim, their stated "
@@ -1874,7 +1875,7 @@ def handle(req):
     if m == "initialize":
         return {"jsonrpc": "2.0", "id": rid, "result": {
             "protocolVersion": PROTOCOL, "capabilities": {"tools": {}},
-            "serverInfo": {"name": "elipsis", "version": "0.4.0"},
+            "serverInfo": {"name": "elipsis", "version": "0.5.0"},
             "instructions": SHOW_WORK}}
     if m in ("notifications/initialized", "initialized"):
         return None
